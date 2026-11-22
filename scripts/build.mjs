@@ -18,7 +18,7 @@ function loadLessons(site, { drafts = false } = {}) {
     const jp = path.join(dir, slug, 'lesson.json');
     if (!fs.existsSync(jp)) continue;
     const j = readJson(jp);
-    for (const k of ['title', 'order', 'kicker', 'summary', 'description', 'intro', 'topics']) {
+    for (const k of ['title', 'order', 'kicker', 'summary', 'description', 'intro', 'topics', 'published', 'updated']) {
       if (j[k] === undefined) throw new Error(`${slug}/lesson.json is missing "${k}"`);
     }
     if (j.draft && !drafts) continue;
@@ -30,10 +30,10 @@ function loadLessons(site, { drafts = false } = {}) {
 }
 
 /* ---------- shared pieces ---------- */
-const LOGO_DARK = '/assets/brand/gametapelicks-dark.webp';
+const LOGO_DARK = '/assets/brand/gametapelicks-dark.png';
 const LOGO_LIGHT = '/assets/brand/gametapelicks-light.webp';
 
-function shell(site, { title, description, url, nav, body, scripts = '', bodyClass = '', noindex = false }) {
+function shell(site, { title, description, url, nav, body, scripts = '', bodyClass = '', noindex = false, ogType = 'website', jsonld = [] }) {
   const full = site.domain + url;
   const navHtml = site.nav.map((n) => `<a href="${n.href}"${nav === n.href ? ' aria-current="page"' : ''}>${e(n.label)}</a>`).join('');
   return `<!doctype html>
@@ -43,21 +43,27 @@ function shell(site, { title, description, url, nav, body, scripts = '', bodyCla
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${e(title)}</title>
 <meta name="description" content="${e(description)}">
-${noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta name="theme-color" content="#151A20">
+${noindex ? '<meta name="robots" content="noindex">\n' : '<meta name="robots" content="index, follow, max-image-preview:large">\n'}<meta name="theme-color" content="#151A20">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
 <link rel="apple-touch-icon" href="/favicon-180.png">
 <link rel="canonical" href="${full}">
+<meta property="og:type" content="${ogType}">
+<meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="${e(site.name)}">
 <meta property="og:title" content="${e(title)}">
 <meta property="og:description" content="${e(description)}">
 <meta property="og:url" content="${full}">
 <meta property="og:image" content="${site.domain}/og.png">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${e(title)}">
+<meta name="twitter:description" content="${e(description)}">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
 <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 <script>document.documentElement.classList.add('js')</script>
+${jsonld.map((o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`).join('\n')}
 </head>
 <body class="${bodyClass}">
 <a class="skip" href="#main">Skip to content</a>
@@ -97,6 +103,14 @@ function previewBoard(lesson, W) {
   return `<figure class="panel">${svg}<figcaption>${R.n} with ${majName} is ${R.n} major. ${R.n} with ${minName} is ${R.n} minor. Frets 8 to 18.</figcaption></figure>`;
 }
 
+function breadcrumb(site, trail) {
+  return { '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: trail.map(([name, url], i) => ({ '@type': 'ListItem', position: i + 1, name, item: site.domain + url })) };
+}
+const orgNode = (site) => ({ '@type': 'Organization', '@id': `${site.domain}/#org`, name: site.name, url: site.domain + '/',
+  logo: site.domain + (site.org?.logo || '/favicon-192.png'), ...(site.org?.sameAs?.length ? { sameAs: site.org.sameAs } : {}) });
+const authorNode = (site) => (site.author ? { '@type': 'Person', name: site.author.name, ...(site.author.url ? { url: site.author.url } : {}) } : orgNode(site));
+const fmtDate = (iso) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 const lessonUrl = (l) => `/lessons/${l.slug}/`;
 const topicName = (site, slug) => (site.topics.find((t) => t.slug === slug) || { name: slug }).name;
 
@@ -123,7 +137,8 @@ ${heroBoard}</div></section>
 <div class="grid">${steps}</div></div></section>
 <section class="section"><div class="wrap"><div class="row-head"><h2>Start here</h2><a href="/lessons/" style="font-weight:600">All lessons</a></div>${feature}<div class="grid">${more}</div></div></section>
 <section class="section"><div class="wrap"><h2 style="font-size:1.75rem">Browse by topic</h2><div style="display:flex;flex-wrap:wrap;gap:12px">${topics}</div></div></section>`;
-  return shell(site, { title: `${site.name} | ${site.home.title}`, description: site.description, url: '/', nav: '/', body });
+  return shell(site, { title: site.home.seoTitle || `${site.name} | ${site.home.title}`, description: site.description, url: '/', nav: '/', body,
+    jsonld: [{ '@context': 'https://schema.org', '@graph': [orgNode(site), { '@type': 'WebSite', '@id': `${site.domain}/#site`, url: site.domain + '/', name: site.name, description: site.description, publisher: { '@id': `${site.domain}/#org` }, inLanguage: 'en' }] }] });
 }
 
 function lessonRow(site, l) {
@@ -134,7 +149,7 @@ function lessonRow(site, l) {
 <div class="figure">${previewBoard(l)}</div></article>`;
 }
 
-function listPage(site, lessons, { url, title, lede, active, heading }) {
+function listPage(site, lessons, { url, title, lede, active, heading, description }) {
   const side = [`<a href="/lessons/"${active === 'all' ? ' aria-current="true"' : ''}>All lessons</a>`]
     .concat(site.topics.map((t) => `<a href="/topics/${t.slug}/"${active === t.slug ? ' aria-current="true"' : ''}>${e(t.name)}</a>`)).join('');
   const rows = lessons.length ? lessons.map((l) => lessonRow(site, l)).join('')
@@ -148,7 +163,8 @@ function listPage(site, lessons, { url, title, lede, active, heading }) {
 (function(){var q=document.getElementById('q'),rows=[].slice.call(document.querySelectorAll('.lesson-row')),none=document.getElementById('none');
 q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(),n=0;rows.forEach(function(r){var m=!v||r.getAttribute('data-search').indexOf(v)>-1;r.hidden=!m;if(m)n++;});none.hidden=n>0||!rows.length;});})();
 </script>`;
-  return shell(site, { title: `${title} | ${site.name}`, description: lede, url, nav: '/lessons/', body });
+  const trail = [['Home', '/'], ['Lessons', '/lessons/']].concat(url === '/lessons/' ? [] : [[title, url]]);
+  return shell(site, { title: `${title} | ${site.name}`, description: description || lede, url, nav: '/lessons/', body, jsonld: [breadcrumb(site, trail)] });
 }
 
 function topicsIndex(site, lessons) {
@@ -158,13 +174,15 @@ function topicsIndex(site, lessons) {
   }).join('');
   const body = `<section class="band page-band"><div class="wrap"><p class="kicker">Topics</p><h1>Pick the skill you want to build.</h1><p class="lede">Every lesson belongs to a topic, so you can stay with one skill until it feels natural.</p></div></section>
 <div class="wrap section"><div class="grid">${cards}</div></div>`;
-  return shell(site, { title: `Topics | ${site.name}`, description: 'Browse Gametape Licks lessons by topic.', url: '/topics/', nav: '/topics/', body });
+  return shell(site, { title: `Topics | ${site.name}`, description: 'Browse Gametape Licks guitar lessons by topic.', url: '/topics/', nav: '/topics/', body, jsonld: [breadcrumb(site, [['Home', '/'], ['Topics', '/topics/']])] });
 }
 
 function aboutPage(site) {
+  const a = site.author;
+  const author = a ? `<div class="card soft" id="author"><p class="kicker">The author</p><h2 style="font-size:1.5rem">${e(a.name)}</h2>${a.bio.map((p) => `<p>${e(p)}</p>`).join('')}<p><a href="${e(a.url)}" rel="author">${e(a.url.replace('https://', ''))}</a>${(a.links || []).map((l) => ` · <a href="${e(l.url)}" rel="me noopener">${e(l.label)}</a>`).join('')}${(site.org.sameAs || []).filter((u) => u !== a.url && !(a.links || []).some((l) => l.url === u)).map((u) => ` · <a href="${e(u)}" rel="me noopener">${e(u.includes('linkedin') ? 'LinkedIn' : u.includes('x.com') ? 'X' : u.replace(/^https?:\/\/(www\.)?/, ''))}</a>`).join('')}</p></div>` : '';
   const body = `<section class="band page-band"><div class="wrap"><p class="kicker">About</p><h1>${e(site.about.title)}</h1></div></section>
-<div class="wrap section"><div style="display:grid;gap:20px;max-width:680px">${site.about.paragraphs.map((p) => `<p class="lede" style="color:var(--ink)">${e(p)}</p>`).join('')}</div></div>`;
-  return shell(site, { title: `About | ${site.name}`, description: site.description, url: '/about/', nav: '/about/', body });
+<div class="wrap section"><div style="display:grid;gap:20px;max-width:680px">${site.about.paragraphs.map((p) => `<p class="lede" style="color:var(--ink)">${e(p)}</p>`).join('')}${author}</div></div>`;
+  return shell(site, { title: `About | ${site.name}`, description: site.description, url: '/about/', nav: '/about/', body, jsonld: [breadcrumb(site, [['Home', '/'], ['About', '/about/']])] });
 }
 
 function notFound(site) {
@@ -186,7 +204,8 @@ ${next ? `<a class="next" href="${lessonUrl(next)}"><span class="kicker">Next</s
 <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/lessons/">Lessons</a><span aria-hidden="true">/</span><span aria-current="page">${e(l.title)}</span></nav>
 <p class="kicker">${e(l.kicker)}</p><h1>${e(l.title)}</h1>
 <p class="lede">${e(l.intro[0])}</p>${l.intro.slice(1).map((p) => `<p class="more">${e(p)}</p>`).join('')}
-<div class="chips-meta">${(l.chips || []).map((c) => `<span class="pill on-deep">${e(c)}</span>`).join('')}</div></div></section>
+<div class="chips-meta">${(l.chips || []).map((c) => `<span class="pill on-deep">${e(c)}</span>`).join('')}</div>
+<p class="updated">${site.author ? `By ${e(site.author.name)} · ` : ''}Updated <time datetime="${l.updated}">${fmtDate(l.updated)}</time></p></div></section>
 <div class="wrap lesson-wrap">
 <aside class="toc" aria-label="On this page"><p class="kicker">On this page</p><nav class="toc-links">${links}</nav>
 <div class="jump noprint"><label for="jump">Jump to section</label><select id="jump">${opts}</select></div>
@@ -201,13 +220,19 @@ var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isInter
 document.querySelectorAll('.lesson-body > section').forEach(function(s){io.observe(s);});})();
 </script>`;
   const scripts = l.script ? `<script type="module" src="${lessonUrl(l)}${l.script}"></script>` : '';
-  return shell(site, { title: `${l.title} | ${site.name}`, description: l.description, url: lessonUrl(l), nav: '/lessons/', body, scripts });
+  const article = { '@context': 'https://schema.org', '@type': 'Article', headline: l.title, description: l.description, url: site.domain + lessonUrl(l),
+    mainEntityOfPage: site.domain + lessonUrl(l), image: site.domain + '/og.png', datePublished: l.published, dateModified: l.updated, inLanguage: 'en',
+    author: authorNode(site), publisher: orgNode(site), keywords: (l.tags || []).join(', '), articleSection: l.topics.map((t) => topicName(site, t)).join(', ') };
+  return shell(site, { title: l.seoTitle || `${l.title} | ${site.name}`, description: l.description, url: lessonUrl(l), nav: '/lessons/', body, scripts, ogType: 'article',
+    jsonld: [article, breadcrumb(site, [['Home', '/'], ['Lessons', '/lessons/'], [l.title, lessonUrl(l)]])] });
 }
 
 /* ---------- build ---------- */
 export function build({ out = path.join(ROOT, 'dist'), drafts = false } = {}) {
   const site = readJson(path.join(SRC, 'site.json'));
   const lessons = loadLessons(site, { drafts });
+  // Topics without a published lesson stay out of the site until they have one (no thin pages).
+  site.topics = site.topics.filter((t) => lessons.some((l) => l.topics.includes(t.slug)));
   fs.rmSync(out, { recursive: true, force: true });
   fs.mkdirSync(out, { recursive: true });
   const write = (rel, content) => {
@@ -228,7 +253,7 @@ export function build({ out = path.join(ROOT, 'dist'), drafts = false } = {}) {
   write('topics/index.html', topicsIndex(site, lessons));
   for (const t of site.topics) {
     const ls = lessons.filter((l) => l.topics.includes(t.slug));
-    write(`topics/${t.slug}/index.html`, listPage(site, ls, { url: `/topics/${t.slug}/`, title: t.name, lede: `Lessons for ${t.name.toLowerCase()}.`, active: t.slug, heading: 'Topic' }));
+    write(`topics/${t.slug}/index.html`, listPage(site, ls, { url: `/topics/${t.slug}/`, title: t.name, lede: t.blurb, description: `${t.blurb} Guitar lessons from Gametape Licks.`, active: t.slug, heading: 'Topic' }));
   }
   write('about/index.html', aboutPage(site));
   write('404.html', notFound(site));
@@ -237,10 +262,12 @@ export function build({ out = path.join(ROOT, 'dist'), drafts = false } = {}) {
     if (l.script) fs.copyFileSync(path.join(l.dir, l.script), path.join(out, 'lessons', l.slug, l.script));
     if (l.pdf && fs.existsSync(path.join(l.dir, l.pdf))) fs.copyFileSync(path.join(l.dir, l.pdf), path.join(out, 'lessons', l.slug, l.pdf));
   });
-  // sitemap and robots
+  // sitemap, robots and llms.txt
   const urls = ['/', '/lessons/', '/topics/', '/about/'].concat(site.topics.map((t) => `/topics/${t.slug}/`), lessons.map(lessonUrl));
-  write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${site.domain}${u}</loc></url>`).join('\n')}\n</urlset>\n`);
-  write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${site.domain}/sitemap.xml\n`);
+  const mod = Object.fromEntries(lessons.map((l) => [lessonUrl(l), l.updated]));
+  write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${site.domain}${u}</loc>${mod[u] ? `<lastmod>${mod[u]}</lastmod>` : ''}</url>`).join('\n')}\n</urlset>\n`);
+  write('robots.txt', `# Everyone is welcome, including search engines and AI answer engines, so the lessons can be found and cited.\n# To keep lessons out of AI model training, see docs/seo-geo.md.\nUser-agent: *\nAllow: /\n\nSitemap: ${site.domain}/sitemap.xml\n`);
+  write('llms.txt', `# ${site.name}\n\n> ${site.description}\n\n## Lessons\n\n${lessons.map((l) => `- [${l.title}](${site.domain}${lessonUrl(l)}): ${l.description}`).join('\n')}\n\n## Topics\n\n${site.topics.map((t) => `- [${t.name}](${site.domain}/topics/${t.slug}/)`).join('\n')}\n\n## About\n\n- [About ${site.name}](${site.domain}/about/)\n`);
   return { out, lessons, urls };
 }
 

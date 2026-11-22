@@ -21,6 +21,7 @@ src/
 scripts/                    build, dev, new-lesson, make-pdf
 tests/                      theory and site tests (node --test)
 docs/brand/                 brand guide and logos (not deployed)
+docs/seo-geo.md             SEO and GEO checklist, robots policy, measurement
 amplify.yml                 Amplify build: node scripts/build.mjs, publishes dist/
 customHttp.yml              response headers and caching
 .cursor/rules/              project rules for Cursor

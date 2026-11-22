@@ -26,13 +26,16 @@ fs.writeFileSync(path.join(dir, 'lesson.json'), JSON.stringify({
   title,
   order,
   draft: true,
+  seoTitle: `${title}: [what it teaches, with the main search phrase] | Gametape Licks`,
+  published: new Date().toISOString().slice(0, 10),
+  updated: new Date().toISOString().slice(0, 10),
   kicker: `Lesson ${order} · [Skill]`,
   summary: '[Two sentences for the lesson cards: the idea, then what the reader will be able to do.]',
   description: '[One sentence for search results and link previews.]',
   intro: ['[Opening paragraph: the idea and why it matters in the moment.]'],
   chips: ['[Fact one]', '[Fact two]'],
   tags: ['[Topic]'],
-  topics: ['chord-tones'],
+  topics: ["chord-tones"],
   preview: { type: 'thirds', root: 'C' },
   pdf: `${title.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '')}.pdf`
 }, null, 2) + '\n');

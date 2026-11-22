@@ -163,6 +163,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .lesson-hero .wrap { display: grid; gap: 18px; }
 .lesson-hero .lede { max-width: 760px; font-size: 1.25rem; }
 .lesson-hero .more { max-width: 760px; color: var(--on-deep-3); font-size: 1.0625rem; line-height: 1.7; }
+.lesson-hero .updated { color: var(--on-deep-3); font-size: 0.875rem; margin-top: 4px; }
 .chips-meta { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 6px; }
 .lesson-wrap { padding-block: 56px 0; display: flex; flex-wrap: wrap; gap: 56px; align-items: flex-start; }
 .toc { flex: 0 0 210px; display: grid; gap: 2px; position: sticky; top: 24px; align-self: flex-start; }
@@ -272,7 +273,8 @@ ol.steps li::before { content: counter(s); flex: 0 0 32px; height: 32px; border-
   .band h1, .band h2 { color: var(--ink); }
   .band .kicker { color: var(--blue-text); } .band .lede, .lesson-hero .more { color: var(--muted); }
   .lesson-hero { padding-block: 0 8px; }
-  .chips-meta { display: none; }
+  .lesson-hero .updated { color: var(--on-deep-3); font-size: 0.875rem; margin-top: 4px; }
+.chips-meta { display: none; }
   .wrap { max-width: none; padding-inline: 0; }
   .lesson-wrap { padding-block: 16px 0; display: block; }
   .lesson-body, .lesson-body > section, #mapBlock, #routeBlock, #inspBlock, #drillBlock, .card, .controls { display: block; }
