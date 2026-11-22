@@ -1,0 +1,17 @@
+{
+  "title": "Hunting for 3rds",
+  "order": 1,
+  "kicker": "Lesson 1 · Chord-tone soloing",
+  "summary": "Learn where major and minor 3rds live on the neck, then study how Trey Anastasio attacks them. Under the jam-band Mixolydian sound he plays like a blues player. Type any progression and the lesson maps the 3rds, the shortest route between them and the drills for every change.",
+  "description": "An interactive lesson on major and minor 3rds. Type any chord progression and see the 3rds, the nearest route between them and Trey Anastasio style drills for every change.",
+  "intro": [
+    "The 3rd tells everyone in the room whether a chord is major or minor. Land on it when the chord changes and your solo follows the harmony. This lesson shows where every 3rd lives, then rebuilds itself around any progression you type.",
+    "Most listeners hear Trey Anastasio and think of the jam-band Mixolydian sound. Underneath it, Trey plays the blues. He names the chord, finds its 3rd and lets the scale fill in around it. We study how he attacks each change."
+  ],
+  "chips": ["Frets 8 to 18", "Major and minor", "Any progression", "Printable PDF"],
+  "tags": ["Chord tones", "Trey Anastasio approach"],
+  "topics": ["chord-tones"],
+  "preview": { "type": "thirds", "root": "C" },
+  "pdf": "Hunting-for-3rds.pdf",
+  "script": "lesson.js"
+}

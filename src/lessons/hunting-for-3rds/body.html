@@ -1,0 +1,104 @@
+<noscript><p class="note">The fretboards and the progression editor need JavaScript. Turn it on in your browser to use this lesson.</p></noscript>
+
+<section id="thirds" data-toc="Major and minor 3rds">
+  <p class="kicker">01 · The shape</p>
+  <h2>Major and minor 3rds on the neck</h2>
+  <p>A major 3rd sits 4 half steps above the root and a minor 3rd sits 3. On the guitar one half step is one fret, so the two 3rds are neighbors. C with E is C major. C with Eb is C minor. One fret changes the mood of the whole chord.</p>
+  <div class="controls noprint">
+    <div class="field"><label for="rootSel">Root</label><select id="rootSel"></select></div>
+    <div class="field"><label for="winSel">Fretboard window</label><select id="winSel"></select></div>
+    <div class="field"><label class="inline"><input type="checkbox" id="hideChk"> Hide the 3rds and test yourself</label></div>
+  </div>
+  <div class="panel"><figure><div id="showBoard"></div><figcaption id="showCaption"></figcaption></figure></div>
+  <div class="legend"><span><i class="l-R"></i>Root</span><span><i class="l-3"></i>Major 3rd, filled</span><span><i class="l-3m"></i>Minor 3rd, ring</span></div>
+  <h3>Two shortcuts to find any 3rd</h3>
+  <div class="grid wide">
+    <div class="card"><h3>Go up 4 frets</h3><p>From a root, the major 3rd sits 4 frets up the same string.</p></div>
+    <div class="card"><h3>Go up a string, back a fret</h3><p>From a root, the major 3rd also sits one string higher and one fret back. Crossing from the G string to the B string keeps the same fret.</p></div>
+    <div class="card"><h3>Step down for minor</h3><p>The minor 3rd always sits one fret below the major 3rd.</p></div>
+  </div>
+  <div class="tablewrap"><table id="nbrTable"></table></div>
+  <p>The 11-fret window is your hunting ground. Every 3rd appears four to six times inside it, so you can always pick the one nearest your hand.</p>
+</section>
+
+<section id="progression" data-toc="Your progression">
+  <p class="kicker">02 · Your progression</p>
+  <h2>Type any progression, one chord per bar</h2>
+  <p>The lesson reads major, minor, 7, maj7, m7, m7b5, dim, aug, sus and 5 chords: C, Am7, F#m, Bb7, Dmaj7, Gsus4, E5. Edit the line below and every map on the page redraws for your chords.</p>
+  <div class="controls noprint">
+    <div class="field"><label for="presetSel">Start from a preset</label><select id="presetSel"></select></div>
+    <div class="field grow"><label for="titleIn">Name it for the printout</label><input type="text" id="titleIn" maxlength="60" autocomplete="off" placeholder="Song or progression name"></div>
+  </div>
+  <div class="field"><label for="chordsIn">Chords, one per bar</label><input type="text" id="chordsIn" class="chordinput" autocomplete="off" spellcheck="false" aria-describedby="chordErr"></div>
+  <p class="err" id="chordErr" role="status"></p>
+  <div class="bars" id="barGrid" role="group" aria-label="Bars of the progression"></div>
+  <p class="note" id="progSummary"></p>
+  <p class="printonly" id="printLine"></p>
+</section>
+
+<section id="map" data-toc="Where your 3rds live">
+  <p class="kicker">03 · The map</p>
+  <h2>Where your 3rds live</h2>
+  <p>Every 3rd of every chord in your progression, inside the window. Filled circles are major 3rds and rings are minor 3rds. Learn the whole map once, then pick the nearest spot at each change.</p>
+  <div id="mapBlock"></div>
+</section>
+
+<section id="route" data-toc="The route">
+  <p class="kicker">04 · The route</p>
+  <h2>The nearest 3rd at every change</h2>
+  <p>Play the 3rd on beat 1 of each change. The route below picks the spots that keep your hand moving the least. The dashed line follows the order of the changes and the numbers count them.</p>
+  <div id="routeBlock"></div>
+</section>
+
+<section id="inspector" data-toc="Change inspector">
+  <p class="kicker">05 · The change inspector</p>
+  <h2>See how the old chord leads into the new 3rd</h2>
+  <p>Pick a change. Gray dots are the tones of the old chord, blue dots are the new 3rd and the circled spot is the one on your route.</p>
+  <div class="chips noprint" id="chips" role="group" aria-label="Choose a chord change"></div>
+  <div id="inspBlock"></div>
+</section>
+
+<section id="trey" data-toc="How Trey hunts 3rds">
+  <p class="kicker">06 · The approach</p>
+  <h2>How Trey hunts 3rds</h2>
+  <p>Phish fans hear the Mixolydian color first. Listen for what the notes do on the chord change and a blues player appears: Trey lands on the 3rd, frames it with half steps and bends into it, then lets the scale carry the phrase until the next change. Five habits describe how he attacks the changes. They come from his chord-tone playing across Phish and his solo work, and the lesson contains no note-for-note transcription.</p>
+  <p>The Mixolydian scale supplies the color and the 3rd supplies the direction. Each habit below puts that direction in your hands.</p>
+  <div class="grid wide">
+    <div class="card"><span class="num">1</span><h3>Land on the 3rd</h3><p>The 3rd arrives on beat 1 of the change. The listener hears the new chord in your solo before the band finishes the bar line.</p></div>
+    <div class="card"><span class="num">2</span><h3>Repeat a motif and shift it</h3><p>A short cell keeps its shape while the notes follow the harmony. The same degrees over a new chord sound like one idea moving through the song.</p></div>
+    <div class="card"><span class="num">3</span><h3>Approach from a half step</h3><p>A note one fret above and one fret below the 3rd, played just before beat 1, wraps around the target. Players call this an enclosure.</p></div>
+    <div class="card"><span class="num">4</span><h3>Bend into the 3rd</h3><p>Bend the 2nd up a whole step into a major 3rd, or a half step into a minor 3rd. Bend a minor 3rd up a half step for the bright, bluesy lift that major-leaning jams use.</p></div>
+    <div class="card"><span class="num">5</span><h3>Climb and hold</h3><p>Walk up to the 3rd at the top of the phrase, hold it with vibrato and leave space before the next change.</p></div>
+  </div>
+</section>
+
+<section id="drill" data-toc="Drills">
+  <p class="kicker">07 · The drills</p>
+  <h2>Trey-style drills for the selected change</h2>
+  <p>The drills follow the change you picked in the inspector. Each one starts from the 3rd on your route and stays inside the window.</p>
+  <div id="drillBlock"></div>
+</section>
+
+<section id="patterns" data-toc="Patterns">
+  <p class="kicker">08 · The pattern recognition</p>
+  <h2>Four rules that carry to any progression</h2>
+  <p>These are the moves to recognize while the band is playing. Each one lets you place the next 3rd before the chord arrives.</p>
+  <div class="grid wide">
+    <div class="card"><h3>Same root, major to minor</h3><p>The 3rd drops one fret. C to Cm moves E to Eb. Cm to C moves Eb to E.</p></div>
+    <div class="card"><h3>Same chord quality</h3><p>The 3rd moves by the same interval as the root. G7 to F7 drops the root two frets and the 3rd from B to A. Em to Dm moves G to F. Slide the same shape.</p></div>
+    <div class="card"><h3>Chords with a b7</h3><p>When two roots sit a 4th or 5th apart, the b7 of the old chord sits a half step from the new 3rd. C7 to F7 moves Bb to A. G7 to C7 moves F to E. Dm7 to G7 moves C to B. The pattern runs through every ii V I.</p></div>
+    <div class="card"><h3>Chords without a 3rd</h3><p>Sus chords and power chords leave the 3rd out. Hold the last 3rd you played, or wait for the chord to resolve and land on the 3rd there.</p></div>
+  </div>
+</section>
+
+<section id="practice" data-toc="Practice path">
+  <p class="kicker">09 · Put it to work</p>
+  <h2>Practice path</h2>
+  <ol class="steps">
+    <li>Pick a root and a window. Find every major and minor 3rd without looking, then check with the map.</li>
+    <li>Load the 12-bar blues. Play the 3rds as whole notes on each change, following the route.</li>
+    <li>Add the approach tone from the inspector one beat before each change.</li>
+    <li>Add the descending cell, then the enclosure, from the drill section.</li>
+    <li>Type a song you know. Play along with the record at a slow tempo and land the 3rd on every change. Move the window up or down and run it again.</li>
+  </ol>
+</section>

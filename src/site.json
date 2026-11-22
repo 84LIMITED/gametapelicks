@@ -1,0 +1,45 @@
+{
+  "name": "Gametape Licks",
+  "domain": "https://gametapelicks.com",
+  "tagline": "A guitarist's study of the details behind great playing.",
+  "description": "Guitar lessons that teach the why behind the notes and the pattern recognition to adapt to the band, the pace and the moment.",
+  "home": {
+    "kicker": "Guitar lessons for players who listen",
+    "title": "Play what the music is asking for.",
+    "lede": "Every lesson takes one idea and shows you why it works, where it repeats and how to find it again when the band changes direction. You leave with a pattern you can recognize in any key, at any tempo, in any song."
+  },
+  "method": {
+    "kicker": "The method",
+    "title": "Built for the moment you cannot plan for",
+    "body": "A pattern carries across every song that shares it. Gametape Licks lessons train the recognition that lets you adapt to the band, the pace and the moment while the music is playing. Each one starts with the why, so the shapes stay with you after the page is closed.",
+    "steps": [
+      { "title": "See it", "body": "Interactive fretboards show every position of the idea and rebuild themselves around any chord progression you type." },
+      { "title": "Know why", "body": "Plain-language theory explains what each note does against the chord, so a shape on the neck carries meaning." },
+      { "title": "Recognize it", "body": "Rules that repeat across keys, progressions and major or minor, so a new tune looks familiar on the first bar." },
+      { "title": "Use it live", "body": "Drills in the voice of players you admire, built to run at tempo while you listen to the band." }
+    ]
+  },
+  "library": {
+    "title": "One idea at a time, in any key.",
+    "lede": "Work through the lessons in order, or jump to the topic you need on Saturday night. Each lesson page ends with a PDF you can take to rehearsal."
+  },
+  "about": {
+    "title": "About Gametape Licks",
+    "paragraphs": [
+      "Most guitar lessons hand you a song or a phrase. Gametape Licks lessons hand you the pattern behind it, so you can read the band, the tempo and the room and know where to land.",
+      "Each lesson takes one idea apart the way a team studies film. You find the pattern, learn why it works, then rep it in every key until it shows up on its own while the music plays.",
+      "The lessons are free to read and print. They describe approaches heard in the playing of musicians we admire and contain no note-for-note transcriptions."
+    ]
+  },
+  "topics": [
+    { "slug": "chord-tones", "name": "Chord tones" },
+    { "slug": "phrasing", "name": "Phrasing" },
+    { "slug": "ear-training", "name": "Ear training" },
+    { "slug": "rhythm", "name": "Rhythm" }
+  ],
+  "nav": [
+    { "label": "Lessons", "href": "/lessons/" },
+    { "label": "Topics", "href": "/topics/" },
+    { "label": "About", "href": "/about/" }
+  ]
+}

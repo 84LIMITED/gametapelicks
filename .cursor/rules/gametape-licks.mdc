@@ -1,0 +1,30 @@
+---
+description: Gametape Licks site conventions and brand guide v1.0
+alwaysApply: true
+---
+
+# Gametape Licks
+
+Static guitar-lesson site for gametapelicks.com. Plain HTML, CSS and vanilla JavaScript, built by `scripts/build.mjs` from `src/` into `dist/` with no dependencies. AWS Amplify publishes `dist/`.
+
+## Structure
+- `src/site.json` holds site copy, topics and navigation.
+- `src/lessons/<slug>/` holds one lesson: `lesson.json` (metadata and copy), `body.html` (sections) and an optional `lesson.js`.
+- `src/js/theory.js` and `src/js/fretboard.js` are shared by every lesson and by the build. Put reusable music logic there, with a test in `tests/`.
+- `src/css/site.css` is the only stylesheet. Brand colors are CSS variables at the top, with light, dark and print values.
+- Never edit `dist/`. Run `npm run dev` to preview and `npm test` before committing.
+- New lessons start with `npm run new-lesson -- <slug> "Title"`.
+- Use root-relative paths (`/assets/...`, `/lessons/...`) with trailing slashes on page links.
+
+## Brand (guide in docs/brand)
+- Voice: informed, approachable, analytical, musician to musician. Each lesson gives the why and the pattern recognition that let a player adapt to the band, the pace and the moment.
+- Colors: Charcoal #20262C, Sky Blue #49ADE1 (accent only, never a full-page background), Slate Gray #4A4F55, Soft Gray #E6E8EB, White #FFFFFF, Midnight #151A20. Use #1A6A9C for small blue text on light backgrounds.
+- Type: Montserrat 700 for H1 and H2, Montserrat 600 for secondary heads, Inter 400/500/600 for text, IBM Plex Mono for labels and tab. Do not add other weights or fonts.
+- Logo: use the supplied artwork (light and dark versions), at least 180px wide on dark footers and 220px in headers, never stretched or recolored.
+
+## Lesson conventions
+- Major 3rds are filled sky-blue circles. Minor 3rds are blue rings. Roots are white on dark panels and charcoal in print. Old-chord tones are slate gray.
+- Fretboard window default is frets 8 to 18.
+- Every page works at 390px wide, in light and dark mode, and prints cleanly (print rules are at the bottom of site.css).
+- Write copy in plain, direct sentences. State what something is. Avoid "not X, but Y" constructions.
+- Before committing, load the page, check the browser console for errors, and check that the page does not scroll sideways on a phone width.
