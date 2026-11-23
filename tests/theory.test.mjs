@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseChord, parseProgression, computeRoute, cellFrom, positions, OPEN, MIDI, PRESETS, thirdsMarks, ROOTS } from '../src/js/theory.js';
+import { parseChord, parseProgression, computeRoute, cellFrom, positions, OPEN, MIDI, PRESETS, thirdsMarks, ROOTS, tensionMap, tensionMarks } from '../src/js/theory.js';
 
 test('chord spelling: the 3rd of each chord', () => {
   const exp = {
@@ -65,4 +65,45 @@ test('thirdsMarks returns the root and both 3rds', () => {
   assert.ok(t.marks.some((m) => m.cls === 'R') && t.marks.some((m) => m.cls === '3M') && t.marks.some((m) => m.cls === '3m'));
   assert.ok(thirdsMarks(ROOTS[0], 8, 18, true).marks.every((m) => m.cls === 'R'));
   assert.ok(positions(4, 8, 18).length >= 4);
+});
+
+const lv = (sym) => { const m = tensionMap(parseChord(sym).chord); const o = {}; m.items.forEach((i) => { (o[i.level] = o[i.level] || []).push(i.name); }); return { m, o }; };
+
+test('tension map for C7: release, color, tension and outside notes', () => {
+  const { m, o } = lv('C7');
+  assert.deepEqual(o.home, ['C', 'E', 'G']);
+  assert.deepEqual(o.color.sort(), ['A', 'Bb', 'D']);
+  assert.deepEqual(o.tense, ['F']);
+  assert.deepEqual(o.outside.sort(), ['Ab', 'B', 'Db', 'Eb', 'Gb'].sort());
+  const f = m.items.find((i) => i.name === 'F');
+  assert.deepEqual(f.resolves, [{ pc: 4, name: 'E', d: -1 }]);
+  const eb = m.items.find((i) => i.name === 'Eb');
+  assert.deepEqual(eb.resolves, [{ pc: 4, name: 'E', d: 1 }]);
+  assert.ok(eb.blue && /3rd/.test(eb.blue));
+});
+
+test('tension map for Am7: Dorian has no avoid note and the half steps above chord tones are outside', () => {
+  const { m, o } = lv('Am7');
+  assert.deepEqual(o.home, ['A', 'C', 'E']);
+  assert.equal(o.tense, undefined);
+  assert.deepEqual(o.color.sort(), ['B', 'D', 'F#', 'G']);
+  assert.ok(o.outside.includes('F') && o.outside.includes('Bb'));
+  assert.deepEqual(m.byPc[5].resolves, [{ pc: 4, name: 'E', d: -1 }]);
+});
+
+test('every chord kind produces twelve items with at least one release note', () => {
+  for (const sym of ['C', 'Cm', 'C7', 'Cmaj7', 'Cm7', 'Cm7b5', 'Cdim', 'Cdim7', 'Caug', 'Csus4', 'C5', 'F#m7', 'Bb7']) {
+    const { m } = lv(sym);
+    assert.equal(m.items.length, 12, sym);
+    assert.ok(m.items.some((i) => i.level === 'home'), sym);
+    m.items.filter((i) => i.level !== 'home').forEach((i) => assert.ok(i.resolves.length >= 1, `${sym} ${i.name}`));
+  }
+});
+
+test('tension marks stay inside the window and the release-only option hides the rest', () => {
+  const { m } = lv('C7');
+  const all = tensionMarks(m, 8, 18, {}), home = tensionMarks(m, 8, 18, { onlyHome: true });
+  assert.ok(all.length > home.length);
+  all.forEach((k) => { assert.ok(k.f >= 8 && k.f <= 18 && k.s >= 0 && k.s <= 5); });
+  home.forEach((k) => assert.ok(['R', '3M', '3m', '5'].includes(k.cls)));
 });

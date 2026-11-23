@@ -20,7 +20,7 @@ function board(marks, o) {
   if (o.path && o.path.length > 1) {
     out.push('<polyline class="path" points="' + o.path.map(function (p) { return X(p.f) + ',' + Y(p.s); }).join(' ') + '"/>');
   }
-  var R = { R: 10, '3M': 12, '3m': 12, '5': 9, '7': 9 };
+  var R = { R: 10, '3M': 12, '3m': 12, '5': 10, '7': 9, T: 9, X: 9 };
   marks.forEach(function (m) {
     var cx = X(m.f), cyy = Y(m.s), r = R[m.cls] || 10;
     if (m.ring) out.push('<circle class="ring" cx="' + cx + '" cy="' + cyy + '" r="' + (r + 4.5) + '"/>');

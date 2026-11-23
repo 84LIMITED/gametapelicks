@@ -30,7 +30,7 @@
 /* Fretboard and tab colors. Panels are dark on screen and light in print. */
 .panel, .tabpanel {
   --b-wire: #37414B; --b-str: #8A939C; --b-num: #9AA3AD; --b-inlay: #2A343D; --b-R: #FFFFFF; --b-R-ink: #151A20;
-  --b-3: #49ADE1; --b-3-ink: #151A20; --b-3m-ink: #49ADE1; --b-7: #59626B; --b-7-ink: #FFFFFF; --b-5: #E6E8EB; --b-ring: #FFFFFF;
+  --b-3: #49ADE1; --b-3-ink: #151A20; --b-3m-ink: #49ADE1; --b-7: #59626B; --b-7-ink: #FFFFFF; --b-5: #E6E8EB; --b-5-ink: #151A20; --b-T: #E6E8EB; --b-X: #A9B0B8; --b-ring: #FFFFFF;
   --b-path: #49ADE1; --b-cap: #A9B0B8; --b-tab: #E6E8EB; --b-t3: #49ADE1; --b-bg: var(--deep);
 }
 
@@ -201,8 +201,16 @@ svg.board { display: block; width: 100%; min-width: 440px; max-width: 880px; hei
 .m-R circle { fill: var(--b-R); } .m-R text { fill: var(--b-R-ink); }
 .m-3 circle, .m-3M circle { fill: var(--b-3); } .m-3 text, .m-3M text { fill: var(--b-3-ink); }
 .m-3m circle { fill: var(--b-bg); stroke: var(--b-3); stroke-width: 2.5; } .m-3m text { fill: var(--b-3m-ink); }
-.m-5 circle { fill: var(--b-bg); stroke: var(--b-5); stroke-width: 1.5; } .m-5 text { fill: var(--b-5); }
+.m-5 circle { fill: var(--b-5); } .m-5 text { fill: var(--b-5-ink); }
+.m-T circle { fill: var(--b-bg); stroke: var(--b-T); stroke-width: 2.5; } .m-T text { fill: var(--b-T); }
+.m-X circle { fill: var(--b-bg); stroke: var(--b-X); stroke-width: 1.6; stroke-dasharray: 3 2.4; } .m-X text { fill: var(--b-X); }
 .m-7 circle { fill: var(--b-7); } .m-7 text { fill: var(--b-7-ink); }
+svg.curve { width: 100%; height: auto; display: block; }
+.curve .ax { stroke: var(--b-wire); stroke-width: 1.4; }
+.curve .ln { fill: none; stroke: var(--b-3); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.curve .dt { fill: var(--b-bg); stroke: var(--b-3); stroke-width: 2.5; } .curve .dt.rel { fill: var(--b-3); }
+.curve .lb { fill: var(--b-cap); font-size: 12px; font-weight: 600; font-family: var(--font-mono); }
+tr.lv-home td:first-child, tr.ph-release td:first-child { box-shadow: inset 3px 0 0 var(--blue); }
 .board .path { fill: none; stroke: var(--b-path); stroke-width: 2; stroke-dasharray: 6 5; }
 .board .ring { fill: none; stroke: var(--b-ring); stroke-width: 2; }
 pre.tab { font: 400 0.9375rem/1.5 var(--font-mono); margin: 0; white-space: pre; color: var(--b-tab); overflow-x: auto; }
@@ -212,6 +220,9 @@ pre.tab { font: 400 0.9375rem/1.5 var(--font-mono); margin: 0; white-space: pre;
 .l-R { background: #20262C; } .l-3 { background: var(--blue); } .l-7 { background: #59626B; }
 .l-3m { border: 2.5px solid var(--blue); width: 10px !important; height: 10px !important; }
 .l-ring { border: 2px solid var(--ink); }
+.l-5 { background: #C5CAD0; border: 1px solid #8A939C; }
+.l-T { border: 2.5px solid var(--ink); width: 10px !important; height: 10px !important; }
+.l-X { border: 2px dashed var(--muted); width: 10px !important; height: 10px !important; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .l-R { background: #FFFFFF; } :root:not([data-theme="light"]) .l-ring { border-color: #FFFFFF; } }
 
 #mapBlock, #routeBlock, #inspBlock, #drillBlock { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
@@ -262,7 +273,7 @@ ol.steps li::before { content: counter(s); flex: 0 0 32px; height: 32px; border-
   :root, :root[data-theme="dark"] { --bg: #FFFFFF; --soft: #F6F7F8; --card: #FFFFFF; --ink: #20262C; --muted: #4A4F55; --rule: #E6E8EB; --blue-text: #1A6A9C; --blue-wash: #FFFFFF; --deep: #FFFFFF; color-scheme: light; }
   .panel, .tabpanel {
     --b-bg: #E6E8EB; --b-wire: #9AA0A8; --b-str: #8C929A; --b-num: #4A4F55; --b-inlay: #9AA0A8; --b-R: #20262C; --b-R-ink: #FFFFFF;
-    --b-3m-ink: #1A6A9C; --b-7: #4A4F55; --b-5: #20262C; --b-ring: #20262C; --b-path: #4A4F55; --b-cap: #4A4F55; --b-tab: #20262C; --b-t3: #1A6A9C;
+    --b-3m-ink: #1A6A9C; --b-7: #4A4F55; --b-5: #9AA0A8; --b-5-ink: #20262C; --b-T: #20262C; --b-X: #4A4F55; --b-ring: #20262C; --b-path: #4A4F55; --b-cap: #4A4F55; --b-tab: #20262C; --b-t3: #1A6A9C;
   }
   body { font-size: 10.5pt; line-height: 1.5; }
   .site-header, .site-footer, .toc, .noprint, .controls, .chips, .field, .err, .skip, .crumbs, .pager, .hero .actions, .pdflink, .jump { display: none !important; }

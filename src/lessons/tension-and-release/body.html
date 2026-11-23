@@ -1,0 +1,135 @@
+<noscript><p class="note">The fretboards and the progression editor need JavaScript. Turn it on in your browser to use this lesson.</p></noscript>
+
+<section id="idea" data-toc="The idea">
+  <p class="kicker">01 · The idea</p>
+  <h2>Tension is distance from home. Release is arriving.</h2>
+  <p>Every chord has a home: its root, its 3rd and its 5th. Play one of those and the note sounds settled. Step away from home and the ear leans forward, waiting for you to come back. The farther you step and the sharper the clash, the harder the pull.</p>
+  <p>Release is the moment the note arrives. Players build the pull, hold it a beat longer than feels comfortable, then land on the root, 3rd or 5th. The landing feels big because of the build.</p>
+  <div class="grid wide">
+    <div class="card"><span class="num">1</span><h3>Release</h3><p>The root, 3rd and 5th. These notes sit at rest and make good places to land.</p></div>
+    <div class="card"><span class="num">2</span><h3>Color</h3><p>The 7th and the scale notes that sit comfortably around the chord, such as the 9th and the 6th. They sweeten a line and still sound settled.</p></div>
+    <div class="card"><span class="num">3</span><h3>Tension</h3><p>A scale note a half step above a chord tone, such as the 4th over a major or dominant chord. It clashes with the note below it and wants to drop onto it.</p></div>
+    <div class="card"><span class="num">4</span><h3>Outside</h3><p>Notes that are not in the chord's scale at all. They pull the hardest. Blues players call the flat 3rd over a dominant chord a blue note, and they bend it up into the major 3rd.</p></div>
+  </div>
+  <p class="callout">One example. Over C7 the notes are C, E, G and Bb. F sits a fret above E, so F rubs against the 3rd. Play F, hold it, and drop to E. That small drop is a release. The same F over an F chord is the root, home, and carries no tension at all. Tension belongs to the chord underneath the note.</p>
+</section>
+
+<section id="progression" data-toc="Your progression">
+  <p class="kicker">02 · Your progression</p>
+  <h2>Type any progression, one chord per bar</h2>
+  <p>It understands major, minor, 7, maj7, m7, m7b5, dim, aug, sus and 5 chords, such as C, Am7, F#m, Bb7, Dmaj7, Gsus4 and E5. Tap a bar to see the tension map for that chord.</p>
+  <div class="controls noprint">
+    <div class="field"><label for="presetSel">Start from a preset</label><select id="presetSel"></select></div>
+    <div class="field grow"><label for="titleIn">Name it for the printout</label><input type="text" id="titleIn" maxlength="60" autocomplete="off" placeholder="Song or progression name"></div>
+  </div>
+  <div class="field"><label for="chordsIn">Chords, one per bar</label><input type="text" id="chordsIn" class="chordinput" autocomplete="off" spellcheck="false" aria-describedby="chordErr"></div>
+  <p class="err" id="chordErr" role="status"></p>
+  <div class="bars" id="barGrid" role="group" aria-label="Bars of the progression"></div>
+  <p class="note" id="progSummary"></p>
+  <p class="printonly" id="printLine"></p>
+</section>
+
+<section id="map" data-toc="The tension map">
+  <p class="kicker">03 · The tension map</p>
+  <h2>Every note on the neck, ranked by how hard it pulls</h2>
+  <p>Pick a chord. Filled dots are release notes. Gray dots are color. A solid ring is tension. A dashed ring is outside. The table lists all twelve notes and where each one wants to go.</p>
+  <div class="controls noprint">
+    <div class="field"><label for="winSel">Fretboard window</label><select id="winSel"></select></div>
+    <div class="field"><label for="labSel">Label the dots with</label><select id="labSel"><option value="name">Note names</option><option value="interval">Intervals</option></select></div>
+    <div class="field"><label class="inline"><input type="checkbox" id="hideChk"> Show only the release notes</label></div>
+  </div>
+  <div class="chips noprint" id="chips" role="group" aria-label="Choose a chord"></div>
+  <div id="mapBlock"></div>
+</section>
+
+<section id="pull" data-toc="Resolve a note">
+  <p class="kicker">04 · Resolve a note</p>
+  <h2>Pick a tense note and see where it lands</h2>
+  <p>A half step is the strongest pull in music, so most tense notes sit one fret from a chord tone. Choose a note and the lesson shows the nearest spot on the neck where it resolves, with the dashed line as the path.</p>
+  <div class="controls noprint">
+    <div class="field grow"><label for="tenSel">Tension note over the selected chord</label><select id="tenSel"></select></div>
+  </div>
+  <div id="pullBlock"></div>
+</section>
+
+<section id="plan" data-toc="Build and release">
+  <p class="kicker">05 · Build and release</p>
+  <h2>A bar-by-bar plan for your progression</h2>
+  <p>Tension needs a shape. This plan splits your progression into four-bar lines and gives each line a set up, a build, a peak and a release. Treat it as a starting map and move the release to wherever the song resolves.</p>
+  <div id="planBlock"></div>
+</section>
+
+<section id="arc" data-toc="The long arc">
+  <p class="kicker">06 · The long arc</p>
+  <h2>Five dials you can turn</h2>
+  <p>Notes are one way to build tension. Every other part of your playing can climb too. A solo builds when several dials rise together, and it releases when they all drop at the same moment you land.</p>
+  <div class="panel"><figure>
+    <svg class="curve" viewBox="0 0 640 220" role="img" aria-label="A tension curve rising across four bars and dropping on the release">
+      <line class="ax" x1="40" y1="190" x2="620" y2="190"/><line class="ax" x1="40" y1="20" x2="40" y2="190"/>
+      <polyline class="ln" points="60,170 180,140 300,95 420,40 500,40 520,172 600,176"/>
+      <circle class="dt" cx="60" cy="170" r="5"/><circle class="dt" cx="180" cy="140" r="5"/><circle class="dt" cx="300" cy="95" r="5"/><circle class="dt" cx="420" cy="40" r="5"/><circle class="dt rel" cx="520" cy="172" r="7"/>
+      <text class="lb" x="60" y="210" text-anchor="middle">Set up</text><text class="lb" x="180" y="210" text-anchor="middle">Build</text><text class="lb" x="300" y="210" text-anchor="middle">Build</text><text class="lb" x="440" y="210" text-anchor="middle">Peak</text><text class="lb" x="540" y="210" text-anchor="middle">Release</text>
+      <text class="lb" x="46" y="34">Tension</text>
+    </svg>
+    <figcaption>The build climbs in steps, holds at the peak and falls in one move when you land on a release note.</figcaption></figure></div>
+  <div class="grid wide">
+    <div class="card"><span class="num">1</span><h3>Distance from the chord</h3><p>Start with chord tones, add color, then lean on tension and outside notes. Each step moves farther from home.</p></div>
+    <div class="card"><span class="num">2</span><h3>Rhythm</h3><p>Long notes feel calm. Quarter notes, then eighths, then sixteenths feel like speeding up even when the tempo holds still.</p></div>
+    <div class="card"><span class="num">3</span><h3>Register</h3><p>Higher notes sound more urgent. Climb a few frets at a time and save the highest notes for the peak.</p></div>
+    <div class="card"><span class="num">4</span><h3>Volume and attack</h3><p>Pick harder, bend wider and let the sustain ring. Softer playing at the landing makes the release feel earned.</p></div>
+    <div class="card"><span class="num">5</span><h3>Repetition</h3><p>Repeat one short phrase and squeeze it tighter each time. The ear waits for the pattern to break, and the break is your release.</p></div>
+  </div>
+</section>
+
+<section id="listen" data-toc="What to listen for">
+  <p class="kicker">07 · What to listen for</p>
+  <h2>Trey and Rick</h2>
+  <p>These are listening prompts to try on your favorite long jams. They describe what the ear can pick up and make no claim to be transcriptions.</p>
+  <div class="grid wide">
+    <div class="card"><h3>Trey Anastasio</h3><p>Put on a long Phish jam and follow one phrase. Notice how he repeats a short idea while the band lifts underneath him, then settles on a clear note as the section turns. Ask which note he landed on and what he played two bars earlier. The bends from the flat 3rd up to the 3rd are blues vocabulary for exactly this kind of pull.</p></div>
+    <div class="card"><h3>Rick Mitarotonda</h3><p>In a <a href="https://www.guitarplayer.com/guitarists/rick-mitarotonda-on-his-sonny-rollins-never-say-die-approach-to-guitar-solos" rel="noopener">Guitar Player interview</a> Rick describes a Sonny Rollins idea: keep pushing, then get out of the way and let the music carry the band. In this lesson's terms the push is the build and getting out of the way is the release. Listen for the point where his line stops pushing and settles while the band keeps moving.</p></div>
+  </div>
+</section>
+
+<section id="drill" data-toc="Drills">
+  <p class="kicker">08 · The drills</p>
+  <h2>Tension and release drills for the selected chord</h2>
+  <p>The drills follow the chord you picked above. Each one aims at the 3rd, or at the root when the chord has no 3rd, and uses the tense note a fret away from it.</p>
+  <div id="drillBlock"></div>
+</section>
+
+<section id="patterns" data-toc="Patterns">
+  <p class="kicker">09 · The pattern recognition</p>
+  <h2>Four rules that carry to any song</h2>
+  <div class="grid wide">
+    <div class="card"><h3>A fret away pulls hardest</h3><p>A note one fret from a chord tone wants to move to it. Spot the nearest chord tone and you know where the line is heading.</p></div>
+    <div class="card"><h3>The 4th leans down</h3><p>Over a major or dominant chord, the 4th sits a fret above the 3rd. F over C7 drops to E. Hold the 4th for a beat, then let it fall.</p></div>
+    <div class="card"><h3>The blue note leans up</h3><p>The flat 3rd over a major or dominant chord, Eb over C7, bends or slides up to the major 3rd. The flat 5th leans up to the 5th.</p></div>
+    <div class="card"><h3>The chord decides the job</h3><p>The same note changes role when the chord changes. F is tension over C7 and the root over F7. Landing on a note that was tense a bar earlier makes the change feel like a payoff.</p></div>
+  </div>
+</section>
+
+<section id="practice" data-toc="Practice path">
+  <p class="kicker">10 · Put it to work</p>
+  <h2>Practice path</h2>
+  <ol class="steps">
+    <li>Load the 12-bar blues. Pick C7 and find every release note in the window, then check yourself with the release-only box.</li>
+    <li>Play each tension note in the table, hold it for two beats and resolve it to the target. Say the interval out loud.</li>
+    <li>Run the drills for C7, then F7, then G7. Notice how the same fret shape changes job on each chord.</li>
+    <li>Play one four-bar line from the plan. Start with long chord tones, climb through the build and land on the 3rd of the release bar.</li>
+    <li>Pick a song you know, type in its chords and play along at a slow tempo. Build for three bars and land on the change.</li>
+  </ol>
+</section>
+
+<section id="faq" data-toc="Quick answers">
+  <p class="kicker">11 · Quick answers</p>
+  <h2>Questions about tension and release on guitar</h2>
+  <div class="grid wide">
+    <div class="card"><h3>What is tension and release in a guitar solo?</h3><p>Tension is a note or a rhythm that pulls forward, and release is the arrival that relaxes the pull. Soloists build tension with notes that clash with the chord, then release it by landing on the root, 3rd or 5th.</p></div>
+    <div class="card"><h3>Which notes create tension?</h3><p>Notes a half step above a chord tone and notes outside the chord's scale create the most tension. Over a dominant chord that includes the 4th, the flat 3rd and the flat 5th.</p></div>
+    <div class="card"><h3>Which notes give release?</h3><p>The root, 3rd and 5th of the current chord. The 3rd is the most descriptive, the root feels most final and the 5th sounds open.</p></div>
+    <div class="card"><h3>How long should I hold the tension?</h3><p>Hold it until the ear begins to ask for the resolution, usually one to four beats. Release on a strong beat such as beat 1 of a new bar or a chord change.</p></div>
+    <div class="card"><h3>Can I build tension without outside notes?</h3><p>Yes. Rhythm, register, volume and repetition all build tension with in-scale notes. Playing the same short phrase faster and higher, then landing on a chord tone, works with any notes.</p></div>
+    <div class="card"><h3>How is this different from playing the 3rd?</h3><p>Lesson 1 shows where each 3rd lives. This lesson gives the 3rd a job as the landing spot, and the notes before it supply the pull.</p></div>
+  </div>
+</section>

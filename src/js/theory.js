@@ -219,8 +219,69 @@ function thirdsMarks(R, lo, hi, hide) {
   return { marks: marks, majName: majName, minName: minName };
 }
 
+/* ---------- tension map ----------
+   Levels, from most settled to most tense:
+   home    root, 3rd and 5th of the chord (release)
+   color   the chord's 7th and any scale note that does not sit a half step above a home tone
+   tense   a scale note a half step above a home tone (the classic avoid note, such as F over C7)
+   outside a note that is not in the chord's parent scale */
+var IVLABEL = [['R', 0], ['b2', 1], ['2', 1], ['b3', 2], ['3', 2], ['4', 3], ['b5', 4], ['5', 4], ['b6', 5], ['6', 5], ['b7', 6], ['7', 6]];
+var IVWORD = { R: 'root', b2: 'b2', '2': '2nd', b3: 'b3', '3': '3rd', '4': '4th', b5: 'b5', '5': '5th', b6: 'b6', '6': '6th', b7: 'b7', '7': '7th' };
+var LEVEL_NAME = { home: 'Release', color: 'Color', tense: 'Tension', outside: 'Outside' };
+var LEVEL_CLS = { color: '7', tense: 'T', outside: 'X' };
+
+function tensionMap(chord) {
+  var homePcs = {}, chordPcs = {}, homeTone = {};
+  chord.tones.forEach(function (t) {
+    chordPcs[t.pc] = 1;
+    if (t.cls === 'R' || t.cls === '3M' || t.cls === '3m' || t.cls === '5') { homePcs[t.pc] = 1; homeTone[t.pc] = t; }
+  });
+  var sc = SCALES[chord.kind] || (chord.kind === 'sus' || chord.kind === 'power' ? SCALES.dom7 : null);
+  var scalePcs = {};
+  if (sc) sc.s.forEach(function (x) { scalePcs[mod(chord.pc + x, 12)] = 1; });
+  var items = [], byPc = {}, d;
+  for (d = 0; d < 12; d++) {
+    var pc = mod(chord.pc + d, 12), iv = IVLABEL[d], level;
+    if (homePcs[pc]) level = 'home';
+    else if (chordPcs[pc]) level = 'color';
+    else if (!sc || scalePcs[pc]) level = homePcs[mod(pc - 1, 12)] ? 'tense' : 'color';
+    else level = 'outside';
+    var blue = null, bluesKind = chord.kind === 'maj' || chord.kind === 'dom7';
+    if (level !== 'home' && bluesKind && d === 3) blue = 'Blue note. Bend or slide it up into the 3rd.';
+    if (level !== 'home' && (bluesKind || chord.kind === 'min' || chord.kind === 'min7') && d === 6) blue = 'Blue note. Lean it up to the 5th.';
+    var it = { pc: pc, d: d, label: iv[0], word: IVWORD[iv[0]], name: spell(chord.li + iv[1], pc), level: level, blue: blue, resolves: [],
+      cls: level === 'home' ? homeTone[pc].cls : LEVEL_CLS[level] };
+    items.push(it); byPc[pc] = it;
+  }
+  var homes = items.filter(function (x) { return x.level === 'home'; });
+  items.forEach(function (it) {
+    if (it.level === 'home') return;
+    var best = Infinity, out = [];
+    homes.forEach(function (h) {
+      var sd = signed(h.pc - it.pc), ad = Math.abs(sd);
+      if (ad < best) { best = ad; out = [{ pc: h.pc, name: h.name, d: sd }]; } else if (ad === best) out.push({ pc: h.pc, name: h.name, d: sd });
+    });
+    it.resolves = out;
+  });
+  return { items: items, byPc: byPc, scaleName: sc ? sc.n : null };
+}
+
+/* Fretboard marks for a tension map. Options: labels ('name' or 'interval') and onlyHome. */
+function tensionMarks(map, lo, hi, o) {
+  o = o || {};
+  var marks = [];
+  map.items.forEach(function (it) {
+    if (o.onlyHome && it.level !== 'home') return;
+    positions(it.pc, lo, hi).forEach(function (p) {
+      marks.push({ s: p.s, f: p.f, cls: it.cls, label: o.labels === 'interval' ? it.label : it.name });
+    });
+  });
+  return marks;
+}
+
 export {
   LETTERS, NAT, STRNAME, STRLET, OPEN, MIDI, ROOTS, DEFAULT, PRESETS, TONES, SCALES, MOTION,
   mod, spell, parseChord, parseProgression, positions, pitch, dist, esc, plural, spotText, signed,
-  computeRoute, moveText, lw, stepWord, cellFrom, neighborPitch, thirdsMarks
+  computeRoute, moveText, lw, stepWord, cellFrom, neighborPitch, thirdsMarks,
+  tensionMap, tensionMarks, IVWORD, LEVEL_NAME
 };

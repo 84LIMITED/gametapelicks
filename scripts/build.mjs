@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { ROOTS, esc as escHtml, thirdsMarks } from '../src/js/theory.js';
+import { ROOTS, esc as escHtml, thirdsMarks, parseChord, tensionMap, tensionMarks } from '../src/js/theory.js';
 import { board } from '../src/js/fretboard.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -30,8 +30,13 @@ function loadLessons(site, { drafts = false } = {}) {
 }
 
 /* ---------- shared pieces ---------- */
-const LOGO_DARK = '/assets/brand/gametapelicks-dark.png';
-const LOGO_LIGHT = '/assets/brand/gametapelicks-light.webp';
+// Logo files: uses .png when present, then .webp, so swapping the image format needs no code change.
+const logoFile = (name) => {
+  const ext = ['png', 'webp', 'svg'].find((x) => fs.existsSync(path.join(SRC, 'assets', 'brand', `${name}.${x}`))) || 'png';
+  return `/assets/brand/${name}.${ext}`;
+};
+const LOGO_DARK = logoFile('gametapelicks-dark');
+const LOGO_LIGHT = logoFile('gametapelicks-light');
 
 function shell(site, { title, description, url, nav, body, scripts = '', bodyClass = '', noindex = false, ogType = 'website', jsonld = [] }) {
   const full = site.domain + url;
@@ -90,12 +95,21 @@ ${scripts}
 `;
 }
 
-function legend() {
+function legend(lesson) {
+  if (lesson && lesson.preview && lesson.preview.type === 'tension') {
+    return '<div class="legend"><span><i class="l-R"></i>Root</span><span><i class="l-3"></i>3rd</span><span><i class="l-5"></i>5th</span><span><i class="l-7"></i>Color</span><span><i class="l-T"></i>Tension</span><span><i class="l-X"></i>Outside</span></div>';
+  }
   return '<div class="legend"><span><i class="l-R"></i>Root</span><span><i class="l-3"></i>Major 3rd, filled</span><span><i class="l-3m"></i>Minor 3rd, ring</span></div>';
 }
 
 function previewBoard(lesson, W) {
   const p = lesson.preview;
+  if (p && p.type === 'tension') {
+    const c = parseChord(p.chord).chord;
+    const marks = tensionMarks(tensionMap(c), 8, 18, { labels: 'name' });
+    const svg = board(marks, { lo: 8, hi: 18, aria: `Tension map of ${c.sym} on frets 8 to 18` });
+    return `<figure class="panel">${svg}<figcaption>${c.sym} on frets 8 to 18. Filled dots are release notes. Rings pull toward them.</figcaption></figure>`;
+  }
   if (!p || p.type !== 'thirds') return '';
   const R = ROOTS.find((r) => r.n === p.root) || ROOTS[0];
   const { marks, majName, minName } = thirdsMarks(R, 8, 18, false);
@@ -119,7 +133,7 @@ function homePage(site, lessons) {
   const first = lessons[0];
   const rest = lessons.slice(1, 3);
   const steps = site.method.steps.map((s, i) => `<div class="card"><span class="kicker">0${i + 1}</span><h3>${e(s.title)}</h3><p>${e(s.body)}</p></div>`).join('');
-  const heroBoard = first ? `<div class="figure">${previewBoard(first)}${legend().replace('class="legend"', 'class="legend" style="color:#C5CAD0;margin-top:14px"')}</div>` : '';
+  const heroBoard = first ? `<div class="figure">${previewBoard(first)}${legend(first).replace('class="legend"', 'class="legend" style="color:#C5CAD0;margin-top:14px"')}</div>` : '';
   const feature = first ? `<section aria-labelledby="start" class="feature">
 <div class="copy"><p class="kicker" style="color:#49ADE1">${e(first.kicker)}</p>
 <h2 id="start">${e(first.title)}</h2><p>${e(first.intro[0])}</p>
