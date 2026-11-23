@@ -1,69 +1,69 @@
 {
   "name": "Gametape Licks",
   "domain": "https://gametapelicks.com",
-  "tagline": "A guitarist's study of the details behind great playing.",
-  "description": "Guitar lessons that teach the why behind the notes and the pattern recognition to adapt to the band, the pace and the moment.",
+  "tagline": "Chord tones, at rehearsal tempo.",
+  "description": "Guitar lessons on chord tones, phrasing, ear training and rhythm. Land the 3rd when the chord changes.",
   "home": {
-    "kicker": "Guitar lessons for players who listen",
-    "title": "Play what the music is asking for.",
-    "lede": "Each lesson takes one idea apart. You learn why it works, where it shows up again and how to hear it coming, so you can use it in any key, at any tempo, with any band.",
-    "seoTitle": "Gametape Licks | Guitar Lessons That Teach the Why Behind the Notes"
+    "kicker": "Chord tones",
+    "title": "Land the 3rd.",
+    "lede": "Same lick over C and Cm. The only note that moves is the 3rd. Your ear catches it.",
+    "seoTitle": "Gametape Licks | Guitar Lessons on Chord Tones"
   },
   "method": {
-    "kicker": "The method",
-    "title": "Built for the moment you cannot plan for",
-    "body": "A pattern works in every song that shares it. These lessons train you to spot the pattern while the band is playing, so you can follow along when the tempo shifts or the chords change on you.",
+    "kicker": "The work",
+    "title": "See the 3rd before the change.",
+    "body": "C to F moves the 3rd from E to A. Same move in every key. You spot it while the band is still on C.",
     "steps": [
       {
-        "title": "See it",
-        "body": "Fretboards you can change. Type in a chord progression and every diagram redraws for your chords."
+        "title": "Chords",
+        "body": "Type a progression. The diagrams redraw for those chords."
       },
       {
-        "title": "Know why",
-        "body": "Short explanations of what each note does against the chord, in plain words."
+        "title": "Name it",
+        "body": "The 3rd of C is E. The 3rd of Cm is Eb. One fret."
       },
       {
-        "title": "Recognize it",
-        "body": "Rules that repeat across keys and progressions, so a new tune looks familiar by the second bar."
+        "title": "Move it",
+        "body": "G7 to F7 drops the 3rd from B to A. Slide the shape."
       },
       {
-        "title": "Use it live",
-        "body": "Drills inspired by players you love, like Trey Anastasio, built to run at tempo with a backing track."
+        "title": "Play it",
+        "body": "Drills at tempo. Land the 3rd on beat 1 of the change."
       }
     ]
   },
   "library": {
-    "title": "One idea at a time, in any key.",
-    "lede": "Start at Lesson 1 and work forward, or pick a topic. Every lesson has a printable PDF you can bring to rehearsal."
+    "title": "One idea. Any key.",
+    "lede": "Start at Lesson 1. Each lesson has a PDF for rehearsal."
   },
   "about": {
     "title": "About Gametape Licks",
     "paragraphs": [
-      "Gametape Licks is a place to study guitar the way a team studies game film. Pick one idea, slow it down and look at exactly what is happening.",
-      "Each lesson shows why the idea works, where it shows up again and how to hear it coming. The goal is to know where to go when the band does something you did not plan for.",
-      "The lessons are free to read and print. They describe approaches heard in the playing of musicians we admire. None of them are note-for-note transcriptions."
+      "Gametape Licks is chord-tone work. One idea, on the neck, slow enough to see.",
+      "Land the 3rd when the chord changes. The same move shows up in the next key.",
+      "Free to read and print. Approaches from players I study. No transcriptions."
     ]
   },
   "topics": [
     {
       "slug": "chord-tones",
       "name": "Chord tones",
-      "blurb": "Aim at the notes that define each chord, the 3rds above all, and your solos start to follow the changes."
+      "blurb": "The 3rd says major or minor. Land on it at the change."
     },
     {
       "slug": "phrasing",
       "name": "Phrasing",
-      "blurb": "How a line breathes, where it starts and where it lands. Guitar phrasing lessons for players who want their solos to sound like sentences."
+      "blurb": "Where the line starts, and where it lands on the 3rd."
     },
     {
       "slug": "ear-training",
       "name": "Ear training",
-      "blurb": "Hear the chord change before it arrives. Ear training for guitarists who want to adapt to the band in the moment."
+      "blurb": "Name the 3rd before the bar turns."
     },
     {
       "slug": "rhythm",
       "name": "Rhythm",
-      "blurb": "Time, feel and placement for guitarists. Rhythm lessons that lock your lines to the band."
+      "blurb": "Put the note on beat 1 of the change."
     }
   ],
   "nav": [
@@ -93,8 +93,8 @@
     "name": "Mike Caprio",
     "url": "https://mikecaprio.nyc",
     "bio": [
-      "Mike Caprio is an NYC-based advertising and media executive with more than 25 years of experience building and scaling global advertising, data and video technology businesses. He is known for first-principles thinking and decisive execution, and he brings the same habits to guitar.",
-      "He plays blues and jam-band guitar, and he is the guitarist in The Band Project. He writes these lessons to share what he learns from studying the players he admires: the chord tone, the reason it works and the pattern to listen for next time."
+      "Mike Caprio plays guitar in New York. He spent 25 years in advertising, media, data and video.",
+      "He plays blues and jam-band guitar in The Band Project. These pages are the chord tone and what it does against the chord."
     ],
     "links": [
       {

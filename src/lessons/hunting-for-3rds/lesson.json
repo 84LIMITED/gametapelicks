@@ -1,12 +1,12 @@
 {
   "title": "Hunting for 3rds",
   "order": 1,
-  "kicker": "Lesson 1 · Chord-tone soloing",
-  "summary": "Find the major and minor 3rds anywhere on the neck, then see how Trey Anastasio uses them. Under the jam-band Mixolydian sound, he plays like a blues player. Type in any chord progression and the lesson maps the 3rds, the shortest route between them and drills for each change.",
-  "description": "Learn where major and minor 3rds sit on the guitar neck, then type any chord progression to see the 3rds, the shortest route between them and Trey Anastasio style drills.",
+  "kicker": "Lesson 1 · The 3rd",
+  "summary": "Major and minor 3rds on the neck. Type a progression. The map, the route and the drills follow your chords.",
+  "description": "Guitar lesson on major and minor 3rds. Type a progression and land the 3rd on each change.",
   "intro": [
-    "The 3rds are the seasoning in your solo. Hit one right as the chord changes and you can hear the whole band lock in. This lesson helps you hunt down and land the 3rds, major or minor. You get interactive fretboards and recommendations that rebuild around your chord progression and key.",
-    "The inspiration is Phish's Trey Anastasio. Many players file him strictly as a Mixolydian jam-band guitarist in the spirit of Jerry Garcia. I think much of Trey's style is anchored in the blues, and this lesson looks at how he attacks each change. Check it out."
+    "Hit the 3rd as the chord changes. C takes E. Cm takes Eb. One fret. Type a progression and the boards redraw.",
+    "Trey Anastasio hits the 3rd on the change and circles it with half steps. Blues vocabulary on a jam-band gig."
   ],
   "chips": [
     "Frets 8 to 18",
@@ -16,7 +16,7 @@
   ],
   "tags": [
     "Chord tones",
-    "Trey Anastasio approach"
+    "Trey Anastasio"
   ],
   "topics": [
     "chord-tones"
@@ -27,7 +27,7 @@
   },
   "pdf": "Hunting-for-3rds.pdf",
   "script": "lesson.js",
-  "seoTitle": "Hunting for 3rds: Major and Minor 3rds on Guitar | Gametape Licks",
+  "seoTitle": "Hunting for 3rds | Guitar Lessons | Gametape Licks",
   "published": "2026-11-22",
   "updated": "2026-11-22"
 }

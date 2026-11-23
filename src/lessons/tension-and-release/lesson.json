@@ -1,13 +1,13 @@
 {
   "title": "Tension and Release",
   "order": 2,
-  "kicker": "Lesson 2 · Phrasing and chord tones",
-  "summary": "Build a solo with notes that pull, then let go by landing on the root, 3rd or 5th. Type in a progression and the lesson shows every tense note, where it wants to go and a bar-by-bar plan for the build and the release.",
-  "description": "Learn how guitar solos build tension and release it on the root, 3rd or 5th. Type a chord progression to see every tense note and exactly where it resolves.",
-  "seoTitle": "Tension and Release on Guitar: Resolve to the 3rd | Gametape Licks",
+  "kicker": "Lesson 2 · Tension",
+  "summary": "Notes that pull, then the root, 3rd or 5th. Type a progression and see where each tense note lands.",
+  "description": "Guitar lesson on tension and release. See the tense notes and land them on the root, 3rd or 5th.",
+  "seoTitle": "Tension and Release | Guitar Lessons | Gametape Licks",
   "intro": [
-    "Tension is a note that pulls. Release is the note it pulls toward. A solo that only plays safe notes never goes anywhere, and a solo that never lands never relaxes. Great jam-band guitar lives between the two. This lesson shows you which notes pull, where each one wants to go and how to plan a build and a landing over any progression you type.",
-    "The inspiration is Trey Anastasio of Phish and Rick Mitarotonda of Goose. Both can stretch a phrase until the crowd leans in, then drop onto a chord tone and let everyone breathe. Lesson 1 taught you where the 3rds are. This lesson teaches you when to leave them and how to come back."
+    "A tense note sits a half step off a chord tone. Hold it, then land on the root, 3rd or 5th.",
+    "Trey Anastasio and Rick Mitarotonda hold that note, then drop it on a chord tone."
   ],
   "chips": [
     "Frets 8 to 18",
@@ -19,7 +19,7 @@
     "Tension and release",
     "Chord tones",
     "Phrasing",
-    "Jam band soloing"
+    "Jam band"
   ],
   "topics": [
     "phrasing",

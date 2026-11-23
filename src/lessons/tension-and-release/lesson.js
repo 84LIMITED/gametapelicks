@@ -53,7 +53,7 @@ function renderBars() {
   $('barGrid').innerHTML = h;
   var bad = P.bars.filter(function (b) { return !b.chord; }).length;
   $('chordErr').textContent = bad ? P.bars.filter(function (b) { return b.err; })[0].err : '';
-  $('progSummary').textContent = P.changes.length ? plural(P.bars.length - bad, 'bar') + ', ' + plural(P.changes.length, 'chord change') + '. Blue edges mark the changes. The selected chord drives the sections below.' : '';
+  $('progSummary').textContent = P.changes.length ? plural(P.bars.length - bad, 'bar') + ', ' + plural(P.changes.length, 'chord change') + '. Blue edges mark the changes. The selected chord runs the sections below.' : '';
 }
 
 function renderChips() {
@@ -167,7 +167,7 @@ function renderPlan() {
     }
   }
   $('planBlock').innerHTML = '<div class="tablewrap"><table><thead><tr><th>Bar</th><th>Chord</th><th>Phase</th><th>What to play</th><th>Lean on</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
-    '<p class="note">Each group of four bars is one arc. Shorter groups skip the early phases. Shift the release to the bar where the song resolves.</p>';
+    '<p class="note">Four bars, one build. Short groups skip the start. Put the release on the bar that resolves.</p>';
 }
 
 function levelRank(it) { return it ? { home: 0, color: 1, outside: 2, tense: 3 }[it.level] : -1; }

@@ -85,7 +85,7 @@ function parseChord(tok) {
   var pc = mod(NAT[li] + acc, 12);
   var q = m[3], kind = null;
   for (var k = 0; k < KINDS.length; k++) if (KINDS[k][0].test(q)) { kind = KINDS[k][1]; break; }
-  if (!kind) return { err: 'The chord symbol "' + tok + '" is not recognized.' };
+  if (!kind) return { err: 'Unknown chord "' + tok + '".' };
   var tones = TONES[kind].map(function (sp) {
     var tpc = mod(pc + sp[1], 12);
     return { label: sp[0], pc: tpc, name: spell(li + sp[2], tpc), cls: sp[3] };

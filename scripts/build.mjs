@@ -108,7 +108,7 @@ function previewBoard(lesson, W) {
     const c = parseChord(p.chord).chord;
     const marks = tensionMarks(tensionMap(c), 8, 18, { labels: 'name' });
     const svg = board(marks, { lo: 8, hi: 18, aria: `Tension map of ${c.sym} on frets 8 to 18` });
-    return `<figure class="panel">${svg}<figcaption>${c.sym} on frets 8 to 18. Filled dots are release notes. Rings pull toward them.</figcaption></figure>`;
+    return `<figure class="panel">${svg}<figcaption>${c.sym}, frets 8 to 18. Filled dots are release notes. Rings are the pull.</figcaption></figure>`;
   }
   if (!p || p.type !== 'thirds') return '';
   const R = ROOTS.find((r) => r.n === p.root) || ROOTS[0];
@@ -141,11 +141,11 @@ function homePage(site, lessons) {
 <div class="actions"><a class="btn btn-primary" href="${lessonUrl(first)}">Open the lesson</a></div></div>
 <div class="figure">${previewBoard(first)}</div></section>` : '';
   const more = rest.map((l) => `<article class="card"><p class="kicker">${e(l.kicker)}</p><h3><a href="${lessonUrl(l)}" style="color:inherit;text-decoration:none">${e(l.title)}</a></h3><p>${e(l.summary)}</p></article>`).join('')
-    + `<article class="card soft"><p class="kicker" style="color:var(--muted)">More on the way</p><h3>New lessons are added as they are finished</h3><p>Each one takes a single idea and trains the pattern behind it.</p></article>`;
+    + `<article class="card soft"><p class="kicker" style="color:var(--muted)">Next</p><h3>Next one when it's finished</h3><p>One chord-tone idea at a time.</p></article>`;
   const topics = site.topics.map((t) => `<a class="pill" href="/topics/${t.slug}/">${e(t.name)}</a>`).join('');
   const body = `<section class="band hero"><div class="wrap">
 <div class="copy"><p class="kicker">${e(site.home.kicker)}</p><h1>${e(site.home.title)}</h1><p class="lede">${e(site.home.lede)}</p>
-<div class="actions">${first ? `<a class="btn btn-primary" href="${lessonUrl(first)}">Start with Lesson 1</a>` : ''}<a class="btn btn-ghost" href="#method">How a lesson works</a></div></div>
+<div class="actions">${first ? `<a class="btn btn-primary" href="${lessonUrl(first)}">Start with Lesson 1</a>` : ''}<a class="btn btn-ghost" href="#method">The steps</a></div></div>
 ${heroBoard}</div></section>
 <section class="section" id="method"><div class="wrap"><div class="section-head"><p class="kicker">${e(site.method.kicker)}</p><h2>${e(site.method.title)}</h2><p class="lede">${e(site.method.body)}</p></div>
 <div class="grid">${steps}</div></div></section>
@@ -167,12 +167,12 @@ function listPage(site, lessons, { url, title, lede, active, heading, descriptio
   const side = [`<a href="/lessons/"${active === 'all' ? ' aria-current="true"' : ''}>All lessons</a>`]
     .concat(site.topics.map((t) => `<a href="/topics/${t.slug}/"${active === t.slug ? ' aria-current="true"' : ''}>${e(t.name)}</a>`)).join('');
   const rows = lessons.length ? lessons.map((l) => lessonRow(site, l)).join('')
-    : '<div class="card soft"><h3>Lessons for this topic are on the way</h3><p>New lessons are added as they are finished.</p></div>';
+    : '<div class="card soft"><h3>None yet</h3><p>They go up when they\'re done.</p></div>';
   const body = `<section class="band page-band"><div class="wrap"><p class="kicker">${e(heading)}</p><h1>${e(title)}</h1><p class="lede">${e(lede)}</p></div></section>
 <div class="wrap section"><div class="layout">
 <aside class="sidebar" aria-label="Topics"><p class="kicker">Topics</p>${side}</aside>
 <div class="stack"><div class="search noprint"><label for="q">Search</label><input id="q" type="text" placeholder="Search lessons" autocomplete="off"></div>
-<p class="note" id="none" hidden>No lessons match that search.</p>${rows}</div></div></div>
+<p class="note" id="none" hidden>Nothing matches.</p>${rows}</div></div></div>
 <script>
 (function(){var q=document.getElementById('q'),rows=[].slice.call(document.querySelectorAll('.lesson-row')),none=document.getElementById('none');
 q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(),n=0;rows.forEach(function(r){var m=!v||r.getAttribute('data-search').indexOf(v)>-1;r.hidden=!m;if(m)n++;});none.hidden=n>0||!rows.length;});})();
@@ -184,9 +184,9 @@ q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(),n=0;row
 function topicsIndex(site, lessons) {
   const cards = site.topics.map((t) => {
     const n = lessons.filter((l) => l.topics.includes(t.slug)).length;
-    return `<a class="card" href="/topics/${t.slug}/" style="text-decoration:none"><h3 style="color:var(--ink)">${e(t.name)}</h3><p>${n ? n + (n === 1 ? ' lesson' : ' lessons') : 'Lessons on the way'}</p></a>`;
+    return `<a class="card" href="/topics/${t.slug}/" style="text-decoration:none"><h3 style="color:var(--ink)">${e(t.name)}</h3><p>${n ? n + (n === 1 ? ' lesson' : ' lessons') : 'None yet'}</p></a>`;
   }).join('');
-  const body = `<section class="band page-band"><div class="wrap"><p class="kicker">Topics</p><h1>Pick the skill you want to build.</h1><p class="lede">Every lesson belongs to a topic, so you can stay with one skill until it feels natural.</p></div></section>
+  const body = `<section class="band page-band"><div class="wrap"><p class="kicker">Topics</p><h1>Pick a topic.</h1><p class="lede">Each lesson sits under one topic.</p></div></section>
 <div class="wrap section"><div class="grid">${cards}</div></div>`;
   return shell(site, { title: `Topics | ${site.name}`, description: 'Browse Gametape Licks guitar lessons by topic.', url: '/topics/', nav: '/topics/', body, jsonld: [breadcrumb(site, [['Home', '/'], ['Topics', '/topics/']])] });
 }
@@ -200,7 +200,7 @@ function aboutPage(site) {
 }
 
 function notFound(site) {
-  const body = `<section class="band page-band"><div class="wrap"><p class="kicker">404</p><h1>That page is not here.</h1><p class="lede">Head back to the lessons and pick up from there.</p><div class="actions"><a class="btn btn-primary" href="/lessons/">All lessons</a></div></div></section>`;
+  const body = `<section class="band page-band"><div class="wrap"><p class="kicker">404</p><h1>That page is not here.</h1><p class="lede">Use the lessons list.</p><div class="actions"><a class="btn btn-primary" href="/lessons/">All lessons</a></div></div></section>`;
   return shell(site, { title: `Page not found | ${site.name}`, description: 'Page not found.', url: '/404.html', nav: '', body, noindex: true });
 }
 
@@ -212,7 +212,7 @@ function lessonPage(site, lessons, i) {
   const opts = toc.map((t) => `<option value="${t.id}">${e(t.label)}</option>`).join('');
   const pager = `<nav class="pager" aria-label="More lessons">
 ${prev ? `<a href="${lessonUrl(prev)}"><span class="kicker">Previous</span><span>${e(prev.title)}</span></a>` : `<a href="/lessons/"><span class="kicker">Previous</span><span>Back to all lessons</span></a>`}
-${next ? `<a class="next" href="${lessonUrl(next)}"><span class="kicker">Next</span><span>${e(next.title)}</span></a>` : `<a class="next" href="/lessons/"><span class="kicker">Next</span><span>More lessons are on the way</span></a>`}</nav>`;
+${next ? `<a class="next" href="${lessonUrl(next)}"><span class="kicker">Next</span><span>${e(next.title)}</span></a>` : `<a class="next" href="/lessons/"><span class="kicker">Next</span><span>Next lesson when it's done</span></a>`}</nav>`;
   const body = `<div class="printbrand wrap"><img src="${LOGO_LIGHT}" alt="${e(site.name)}"></div>
 <section class="band lesson-hero"><div class="wrap">
 <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/lessons/">Lessons</a><span aria-hidden="true">/</span><span aria-current="page">${e(l.title)}</span></nav>
@@ -225,7 +225,7 @@ ${next ? `<a class="next" href="${lessonUrl(next)}"><span class="kicker">Next</s
 <div class="jump noprint"><label for="jump">Jump to section</label><select id="jump">${opts}</select></div>
 ${l.pdf ? `<button class="btn btn-line noprint" id="printBtn" type="button">Print or save as PDF</button>` : ''}</aside>
 <article class="lesson-body">${html}
-${l.pdf ? `<p class="note pdflink noprint">Prefer a fixed copy? <a href="${l.pdf}">Download the PDF of the 12-bar blues example</a>.</p>` : ''}
+${l.pdf ? `<p class="note pdflink noprint"><a href="${l.pdf}">Download the PDF</a></p>` : ''}
 ${pager}</article></div>
 <script>
 (function(){var j=document.getElementById('jump');if(j)j.addEventListener('change',function(){location.hash=j.value;});
@@ -280,7 +280,7 @@ export function build({ out = path.join(ROOT, 'dist'), drafts = false } = {}) {
   const urls = ['/', '/lessons/', '/topics/', '/about/'].concat(site.topics.map((t) => `/topics/${t.slug}/`), lessons.map(lessonUrl));
   const mod = Object.fromEntries(lessons.map((l) => [lessonUrl(l), l.updated]));
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${site.domain}${u}</loc>${mod[u] ? `<lastmod>${mod[u]}</lastmod>` : ''}</url>`).join('\n')}\n</urlset>\n`);
-  write('robots.txt', `# Everyone is welcome, including search engines and AI answer engines, so the lessons can be found and cited.\n# To keep lessons out of AI model training, see docs/seo-geo.md.\nUser-agent: *\nAllow: /\n\nSitemap: ${site.domain}/sitemap.xml\n`);
+  write('robots.txt', `# Search engines and answer engines may read and cite these lessons.\n# AI training opt-out is in docs/seo-geo.md.\nUser-agent: *\nAllow: /\n\nSitemap: ${site.domain}/sitemap.xml\n`);
   write('llms.txt', `# ${site.name}\n\n> ${site.description}\n\n## Lessons\n\n${lessons.map((l) => `- [${l.title}](${site.domain}${lessonUrl(l)}): ${l.description}`).join('\n')}\n\n## Topics\n\n${site.topics.map((t) => `- [${t.name}](${site.domain}/topics/${t.slug}/)`).join('\n')}\n\n## About\n\n- [About ${site.name}](${site.domain}/about/)\n`);
   return { out, lessons, urls };
 }

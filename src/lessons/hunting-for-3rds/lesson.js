@@ -37,7 +37,7 @@ function renderShowcase() {
   var tm = thirdsMarks(R, L, H, state.hide), marks = tm.marks, majName = tm.majName, minName = tm.minName;
   $('showBoard').innerHTML = board(marks, { lo: L, hi: H, aria: 'Roots, major 3rds and minor 3rds of ' + R.n + ' from fret ' + L + ' to ' + H });
   $('showCaption').textContent = 'Root ' + R.n + ': the major 3rd is ' + majName + ' and the minor 3rd is ' + minName + '. Frets ' + L + ' to ' + H + '.' +
-    (state.hide ? ' The 3rds are hidden. Find them, then clear the checkbox to check.' : '');
+    (state.hide ? ' 3rds are hidden. Find them, then clear the box.' : '');
 }
 
 function renderNeighbors() {
@@ -179,12 +179,12 @@ function renderInspector() {
         else if (Math.abs(d) <= 2) ap.push(t.name + ' (the ' + lw(t.label) + ' of ' + pr.sym + ') ' + (d > 0 ? 'rises ' : 'falls ') + stepWord(Math.abs(d)) + ' to the new 3rd, ' + plural(Math.abs(d), 'fret') + ' ' + (d > 0 ? 'below' : 'above') + ' it on the same string.');
       });
       if (ap.length) items.push('<strong>Approach tones from the old chord:</strong><ul class="plain">' + ap.map(function (a) { return '<li>' + a + '</li>'; }).join('') + '</ul>');
-      else items.push('No tone of ' + pr.sym + ' sits within a whole step of the new 3rd. Use a half-step enclosure from the drills below.');
+      else items.push('No tone of ' + pr.sym + ' sits within a whole step of the new 3rd. Use the enclosure in the drills.');
     }
     var common = pr.tones.filter(function (t) { return c.tones.some(function (u) { return u.pc === t.pc; }); }).map(function (t) { return t.name; });
     items.push(common.length ? 'Tones the two chords share: ' + common.join(', ') + '.' : 'The two chords share no tones.');
   } else {
-    items.push('This progression has one chord, so the 3rd has no change to follow. Add a second chord to see approach tones.');
+    items.push('One chord. Add another to see the approach tones.');
   }
   if (c.third) {
     items.push('<strong>Play it at:</strong> ' + spotText(route) + '. ' + (c.thirdQ === 'major' ? 'This is a major 3rd.' : 'This is a minor 3rd.'));
