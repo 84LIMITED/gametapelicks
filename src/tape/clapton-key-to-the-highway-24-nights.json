@@ -1,4 +1,5 @@
 {
+  "draft": true,
   "title": "Eric Clapton moves from minor to major in Key to the Highway",
   "seoTitle": "Eric Clapton Key to the Highway Solo: Minor to Major | Gametape Licks",
   "order": 3,
@@ -13,13 +14,11 @@
     "A relaxed blues shows the switch from lesson 3 clearly. He sets up the minor pentatonic, lets a phrase hang, then opens a door to the major sound by bending toward the 3rd or sliding into it.",
     "Listen to how each major phrase arrives. It follows a minor phrase and answers it. Play along with the lesson open and try making the same turn yourself."
   ],
-  "watchFor": [
-    { "t": "0:00", "note": "[confirm] Opening phrases sit in the minor pentatonic." },
-    { "t": "0:00", "note": "[confirm] The first phrase that turns toward the major 3rd." },
-    { "t": "0:00", "note": "[confirm] A bend or slide that lands on a major note." },
-    { "t": "0:00", "note": "[confirm] A return to the minor sound after the major phrase." }
-  ],
-  "video": { "type": "youtube", "id": "FL5dXBAui1o", "start": "2:02" },
+  "video": {
+    "type": "youtube",
+    "id": "FL5dXBAui1o",
+    "start": "2:02"
+  },
   "credit": "Eric Clapton, Key to the Highway, live at the Royal Albert Hall from 24 Nights. [confirm this is the official Eric Clapton upload]. Embedded from YouTube. All rights belong to the artist.",
   "published": "2026-11-23",
   "updated": "2026-11-23"

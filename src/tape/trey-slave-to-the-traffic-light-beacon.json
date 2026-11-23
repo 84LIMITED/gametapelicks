@@ -1,4 +1,5 @@
 {
+  "draft": true,
   "title": "Trey Anastasio lands the changes in Slave to the Traffic Light",
   "seoTitle": "Trey Anastasio Slave to the Traffic Light Solo | Gametape Licks",
   "order": 1,
@@ -12,24 +13,6 @@
     "Slave to the Traffic Light gives Trey room to say one thing slowly. He starts on acoustic, the strings and horns fill in around him, and by the second half he is on electric guitar and the solo has somewhere to go.",
     "Listen for the moment each chord changes. The 3rd arrives on the downbeat, and the phrase after it repeats the same shape in a new spot. That is lesson 1 in a real setting: find the 3rd, land on it, then let the scale carry you to the next change.",
     "Put the video on at half the page width and keep the fretboard map from the lesson next to it. When you hear a change, point at where the 3rd lives before he plays it."
-  ],
-  "watchFor": [
-    {
-      "t": "0:00",
-      "note": "[confirm] Start of the electric solo. Note the first target note after the band settles."
-    },
-    {
-      "t": "0:00",
-      "note": "[confirm] A chord change where the 3rd lands on the downbeat."
-    },
-    {
-      "t": "0:00",
-      "note": "[confirm] A repeated motif moved to a new chord."
-    },
-    {
-      "t": "0:00",
-      "note": "[confirm] A held note with vibrato before the change."
-    }
   ],
   "video": {
     "type": "youtube",

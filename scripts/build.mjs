@@ -50,6 +50,7 @@ function loadClips(lessons, { drafts = false } = {}) {
   }
   return clips.sort((a, b) => a.order - b.order);
 }
+const TAPE_CSS = '<link rel="stylesheet" href="/assets/css/tape.css">\n';
 const clipUrl = (c) => `/tape/${c.slug}/`;
 const toSec = (t) => (typeof t === 'number' ? t : String(t).split(':').reduce((a, x) => a * 60 + Number(x), 0));
 const ytWatch = (id, t = 0) => `https://www.youtube.com/watch?v=${encodeURIComponent(id)}${t ? `&t=${t}s` : ''}`;
@@ -101,7 +102,7 @@ ${PLAYER_JS}`;
   if (c.video.type === 'file' && c.video.poster && c.video.uploadDate) {
     ld.push({ '@context': 'https://schema.org', '@type': 'VideoObject', name: c.title, description: c.description, thumbnailUrl: site.domain + c.video.poster, uploadDate: c.video.uploadDate, contentUrl: site.domain + c.video.src });
   }
-  return shell(site, { title: c.seoTitle || `${c.title} | ${site.name}`, description: c.description, url, nav: '/tape/', body, styles: '<link rel="stylesheet" href="/assets/css/tape.css">\n', ogType: 'article', jsonld: ld });
+  return shell(site, { title: c.seoTitle || `${c.title} | ${site.name}`, description: c.description, url, nav: '/tape/', body, styles: TAPE_CSS, ogType: 'article', jsonld: ld });
 }
 
 function lessonTape(clips) {
@@ -210,7 +211,7 @@ const lessonUrl = (l) => `/lessons/${l.slug}/`;
 const topicName = (site, slug) => (site.topics.find((t) => t.slug === slug) || { name: slug }).name;
 
 /* ---------- pages ---------- */
-function homePage(site, lessons) {
+function homePage(site, lessons, clips = []) {
   const first = lessons[0];
   const rest = lessons.slice(1, 3);
   const steps = site.method.steps.map((s, i) => `<div class="card"><span class="kicker">0${i + 1}</span><h3>${e(s.title)}</h3><p>${e(s.body)}</p></div>`).join('');
@@ -224,6 +225,7 @@ function homePage(site, lessons) {
   const more = rest.map((l) => `<article class="card"><p class="kicker">${e(l.kicker)}</p><h3><a href="${lessonUrl(l)}" style="color:inherit;text-decoration:none">${e(l.title)}</a></h3><p>${e(l.summary)}</p></article>`).join('')
     + `<article class="card soft"><p class="kicker" style="color:var(--muted)">More on the way</p><h3>New lessons are added as they are finished</h3><p>Each one takes a single idea and trains the pattern behind it.</p></article>`;
   const topics = site.topics.map((t) => `<a class="pill" href="/topics/${t.slug}/">${e(t.name)}</a>`).join('');
+  const tapeBand = clips.length ? `<section class="section"><div class="wrap"><div class="card soft tape-promo"><p class="kicker">Game Tape</p><h2 style="font-size:1.75rem">Watch the lessons happen in real solos</h2><p>Video from Trey, Rick and Clapton, cued to the moment that matters, with a short guide to what you are hearing.</p><div class="links"><a class="btn btn-dark" href="/tape/">Watch the Game Tape</a></div></div></div></section>` : '';
   const body = `<section class="band hero"><div class="wrap">
 <div class="copy"><p class="kicker">${e(site.home.kicker)}</p><h1>${e(site.home.title)}</h1><p class="lede">${e(site.home.lede)}</p>
 <div class="actions">${first ? `<a class="btn btn-primary" href="${lessonUrl(first)}">Start with Lesson 1</a>` : ''}<a class="btn btn-ghost" href="#method">How a lesson works</a></div></div>
@@ -231,8 +233,9 @@ ${heroBoard}</div></section>
 <section class="section" id="method"><div class="wrap"><div class="section-head"><p class="kicker">${e(site.method.kicker)}</p><h2>${e(site.method.title)}</h2><p class="lede">${e(site.method.body)}</p></div>
 <div class="grid">${steps}</div></div></section>
 <section class="section"><div class="wrap"><div class="row-head"><h2>Start here</h2><a href="/lessons/" style="font-weight:600">All lessons</a></div>${feature}<div class="grid">${more}</div></div></section>
+${tapeBand}
 <section class="section"><div class="wrap"><h2 style="font-size:1.75rem">Browse by topic</h2><div style="display:flex;flex-wrap:wrap;gap:12px">${topics}</div></div></section>`;
-  return shell(site, { title: site.home.seoTitle || `${site.name} | ${site.home.title}`, description: site.description, url: '/', nav: '/', body,
+  return shell(site, { title: site.home.seoTitle || `${site.name} | ${site.home.title}`, description: site.description, url: '/', nav: '/', body, styles: clips.length ? TAPE_CSS : '',
     jsonld: [{ '@context': 'https://schema.org', '@graph': [orgNode(site), { '@type': 'WebSite', '@id': `${site.domain}/#site`, url: site.domain + '/', name: site.name, description: site.description, publisher: { '@id': `${site.domain}/#org` }, inLanguage: 'en' }] }] });
 }
 
@@ -302,6 +305,7 @@ ${next ? `<a class="next" href="${lessonUrl(next)}"><span class="kicker">Next</s
 <p class="kicker">${e(l.kicker)}</p><h1>${e(l.title)}</h1>
 <p class="lede">${e(l.intro[0])}</p>${l.intro.slice(1).map((p) => `<p class="more">${e(p)}</p>`).join('')}
 <div class="chips-meta">${(l.chips || []).map((c) => `<span class="pill on-deep">${e(c)}</span>`).join('')}</div>
+${tapeHtml ? `<p class="hero-tape"><a class="btn btn-primary" href="#tape">Watch the Game Tape</a></p>` : ''}
 <p class="updated">${site.author ? `By ${e(site.author.name)} · ` : ''}Updated <time datetime="${l.updated}">${fmtDate(l.updated)}</time></p></div></section>
 <div class="wrap lesson-wrap">
 <aside class="toc" aria-label="On this page"><p class="kicker">On this page</p><nav class="toc-links">${links}</nav>
@@ -320,7 +324,7 @@ document.querySelectorAll('.lesson-body > section').forEach(function(s){io.obser
   const article = { '@context': 'https://schema.org', '@type': 'Article', headline: l.title, description: l.description, url: site.domain + lessonUrl(l),
     mainEntityOfPage: site.domain + lessonUrl(l), image: site.domain + '/og.png', datePublished: l.published, dateModified: l.updated, inLanguage: 'en',
     author: authorNode(site), publisher: orgNode(site), keywords: (l.tags || []).join(', '), articleSection: l.topics.map((t) => topicName(site, t)).join(', ') };
-  return shell(site, { title: l.seoTitle || `${l.title} | ${site.name}`, description: l.description, url: lessonUrl(l), nav: '/lessons/', body, scripts, ogType: 'article',
+  return shell(site, { title: l.seoTitle || `${l.title} | ${site.name}`, description: l.description, url: lessonUrl(l), nav: '/lessons/', body, scripts, styles: tapeHtml ? TAPE_CSS : '', ogType: 'article',
     jsonld: [article, breadcrumb(site, [['Home', '/'], ['Lessons', '/lessons/'], [l.title, lessonUrl(l)]])] });
 }
 
@@ -350,7 +354,7 @@ export function build({ out = path.join(ROOT, 'dist'), drafts = false } = {}) {
   fs.cpSync(path.join(SRC, 'css'), path.join(out, 'assets', 'css'), { recursive: true });
   fs.cpSync(path.join(SRC, 'js'), path.join(out, 'assets', 'js'), { recursive: true });
   // pages
-  write('index.html', homePage(site, lessons));
+  write('index.html', homePage(site, lessons, clips));
   write('lessons/index.html', listPage(site, lessons, { url: '/lessons/', title: site.library.title, lede: site.library.lede, active: 'all', heading: 'Lessons' }));
   write('topics/index.html', topicsIndex(site, lessons));
   for (const t of site.topics) {

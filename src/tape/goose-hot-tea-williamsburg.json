@@ -1,4 +1,5 @@
 {
+  "draft": true,
   "title": "Rick Mitarotonda builds tension and cashes it in during Hot Tea",
   "seoTitle": "Rick Mitarotonda Hot Tea Solo: Tension and Release | Gametape Licks",
   "order": 2,
@@ -13,13 +14,11 @@
     "That shape is lesson 2 stretched over a full jam. The tension climbs while the lines pull away from the chord, and the release arrives when the band lands together on home. Your ear learns to wait for that landing.",
     "Watch the video once for the big picture. Then watch it again with the tension map from the lesson open and notice which notes feel unsettled and which ones feel like arriving."
   ],
-  "watchFor": [
-    { "t": "0:00", "note": "[confirm] Rick's solo opens. Listen for the first note that feels like home." },
-    { "t": "0:00", "note": "[confirm] The point where the lines start climbing and the tension rises." },
-    { "t": "0:00", "note": "[confirm] The peak. Hear which chord tone the whole band lands on." },
-    { "t": "0:00", "note": "[confirm] The release, where the band settles and the energy drops." }
-  ],
-  "video": { "type": "youtube", "id": "ARTaQiHS38s", "start": "7:56" },
+  "video": {
+    "type": "youtube",
+    "id": "ARTaQiHS38s",
+    "start": "7:56"
+  },
   "credit": "Goose, Hot Tea, pro-shot video premiered on the band's YouTube channel. Embedded from YouTube. All rights belong to the artists.",
   "published": "2026-11-23",
   "updated": "2026-11-23"

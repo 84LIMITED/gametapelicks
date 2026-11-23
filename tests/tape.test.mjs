@@ -56,3 +56,11 @@ test('copy rules: no em dashes and no "not X, it is Y" constructions in clip int
     assert.ok(!/\b(isn't|is not|it's not|not just|not merely)\b[^.]*,\s*(it's|it is|but)\b/i.test(text), `${c.slug} has a contrastive construction`);
   }
 });
+
+test('the home page and lesson pages link to Game Tape when clips exist', () => {
+  assert.ok(read(withDrafts, 'index.html').includes('href="/tape/">Watch the Game Tape'));
+  const c = withDrafts.clips[0];
+  const html = read(withDrafts, `lessons/${c.lesson}/index.html`);
+  assert.ok(html.includes('href="#tape">Watch the Game Tape'));
+  assert.ok(html.includes('/assets/css/tape.css'));
+});
