@@ -1,0 +1,27 @@
+/* Game Tape pages: video player, timestamp list, clip cards. Loaded only on /tape/ pages. */
+.tape-wrap { padding-top: 40px; }
+.tape-main { max-width: 860px; display: grid; gap: 24px; }
+.player { position: relative; aspect-ratio: 16 / 9; background: var(--deep); border-radius: 12px; overflow: hidden; border: 1px solid var(--deep-line); }
+.player iframe, .player video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
+.facade { position: absolute; inset: 0; display: block; }
+.facade img { width: 100%; height: 100%; object-fit: cover; opacity: .75; display: block; }
+.facade .play { position: absolute; left: 50%; top: 50%; width: 72px; height: 72px; margin: -36px 0 0 -36px; border-radius: 50%; background: var(--blue); box-shadow: 0 6px 24px rgba(0,0,0,.45); }
+.facade .play::after { content: ""; position: absolute; left: 29px; top: 22px; border-left: 22px solid #151A20; border-top: 14px solid transparent; border-bottom: 14px solid transparent; }
+.facade:hover .play { background: #fff; }
+.credit { margin: -8px 0 0; font-size: .875rem; }
+.tape-copy { margin: 0; font-size: 1.0625rem; max-width: 66ch; }
+.tape-h { font-size: 1.5rem; margin: 8px 0 0; }
+.watch { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.watch li { display: grid; grid-template-columns: 76px 1fr; gap: 14px; align-items: start; padding: 14px 16px; border: 1px solid var(--rule); border-radius: 10px; background: var(--card); }
+.ts { font: 600 .9375rem/1 var(--font-mono); min-height: 44px; border-radius: 8px; border: 1px solid var(--blue-text); background: transparent; color: var(--blue-text); cursor: pointer; }
+.ts:hover { background: var(--blue-text); color: #fff; }
+.watch span { align-self: center; }
+.tape-lesson { display: grid; gap: 10px; justify-items: start; }
+.tape-lesson h3 { font-size: 1.25rem; }
+.tape-lesson h3 a { color: var(--ink); }
+.tape-grid .tape-card { display: grid; gap: 10px; align-content: start; }
+.tape-card h2 { font-size: 1.25rem; }
+.tape-card h2 a { color: var(--ink); text-decoration: none; }
+.tape-card h2 a:hover { color: var(--blue-text); }
+.lesson-tape { margin-top: 48px; }
+@media (max-width: 520px) { .watch li { grid-template-columns: 1fr; gap: 8px; } .ts { justify-self: start; padding-inline: 18px; } }

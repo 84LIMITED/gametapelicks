@@ -29,6 +29,87 @@ function loadLessons(site, { drafts = false } = {}) {
   return lessons.sort((a, b) => a.order - b.order);
 }
 
+/* ---------- game tape (video clips) ---------- */
+// Each clip is one JSON file in src/tape/. Clips marked "draft": true stay out of the site until the video is added.
+function loadClips(lessons, { drafts = false } = {}) {
+  const dir = path.join(SRC, 'tape');
+  if (!fs.existsSync(dir)) return [];
+  const slugs = new Set(lessons.map((l) => l.slug));
+  const clips = [];
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.json'))) {
+    const j = readJson(path.join(dir, f));
+    const slug = f.replace(/\.json$/, '');
+    for (const k of ['title', 'order', 'player', 'lesson', 'summary', 'description', 'intro', 'published', 'updated']) {
+      if (j[k] === undefined) throw new Error(`tape/${f} is missing "${k}"`);
+    }
+    if (j.draft && !drafts) continue;
+    if (!slugs.has(j.lesson)) throw new Error(`tape/${f} points at lesson "${j.lesson}", which does not exist or is a draft`);
+    const v = j.video;
+    if (!v || !((v.type === 'youtube' && v.id) || (v.type === 'file' && v.src))) throw new Error(`tape/${f} needs a video: {"type":"youtube","id":"..."} or {"type":"file","src":"/assets/tape/..."}`);
+    clips.push({ ...j, slug });
+  }
+  return clips.sort((a, b) => a.order - b.order);
+}
+const clipUrl = (c) => `/tape/${c.slug}/`;
+const toSec = (t) => (typeof t === 'number' ? t : String(t).split(':').reduce((a, x) => a * 60 + Number(x), 0));
+const ytWatch = (id, t = 0) => `https://www.youtube.com/watch?v=${encodeURIComponent(id)}${t ? `&t=${t}s` : ''}`;
+
+function playerHtml(c) {
+  const v = c.video, start = toSec(v.start || 0);
+  if (v.type === 'youtube') {
+    return `<div class="player" id="player" data-yt="${e(v.id)}" data-start="${start}"><a class="facade" href="${ytWatch(v.id, start)}" aria-label="Play video: ${e(c.title)}"><img src="https://i.ytimg.com/vi/${encodeURIComponent(v.id)}/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span class="play" aria-hidden="true"></span></a></div>`;
+  }
+  return `<div class="player" id="player" data-file="1"><video controls preload="metadata" playsinline${v.poster ? ` poster="${e(v.poster)}"` : ''}><source src="${e(v.src)}" type="${e(v.mime || 'video/mp4')}"></video></div>`;
+}
+
+const PLAYER_JS = `<script>
+(function(){var box=document.getElementById('player');if(!box)return;var id=box.getAttribute('data-yt');
+function seek(t){if(id){box.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?start='+t+'&autoplay=1&rel=0&modestbranding=1" title="Video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';}
+else{var v=box.querySelector('video');if(v){v.currentTime=t;v.play();}}box.scrollIntoView({block:'nearest',behavior:'smooth'});}
+var f=box.querySelector('.facade');if(f)f.addEventListener('click',function(ev){ev.preventDefault();seek(Number(box.getAttribute('data-start'))||0);});
+document.querySelectorAll('[data-t]').forEach(function(b){b.addEventListener('click',function(){seek(Number(b.getAttribute('data-t')));});});})();
+</script>`;
+
+function tapeCard(c) {
+  return `<article class="card tape-card"><p class="kicker">${e(c.player)}${c.song ? ' · ' + e(c.song) : ''}</p><h2><a href="${clipUrl(c)}">${e(c.title)}</a></h2><p>${e(c.summary)}</p><div class="links"><a class="btn btn-dark" href="${clipUrl(c)}">Watch the tape</a></div></article>`;
+}
+
+function tapeIndex(site, clips, lessons) {
+  const body = `<section class="band page-band"><div class="wrap"><p class="kicker">Game Tape</p><h1>Watch the lesson happen in a real solo.</h1><p class="lede">Each clip pairs a lesson with a player using the idea on stage. Watch with the note-by-note intro open, then go back to the lesson and play it yourself.</p></div></section>
+<div class="wrap section"><div class="grid wide tape-grid">${clips.map(tapeCard).join('')}</div></div>`;
+  return shell(site, { title: `Game Tape: Solo Breakdowns | ${site.name}`, description: 'Video examples of the lessons in real solos by Trey Anastasio, Eric Clapton and more, each with a short guide to what to watch and hear.', url: '/tape/', nav: '/tape/', body, jsonld: [breadcrumb(site, [['Home', '/'], ['Game Tape', '/tape/']])] });
+}
+
+function tapePage(site, clips, lessons, i) {
+  const c = clips[i], lesson = lessons.find((l) => l.slug === c.lesson);
+  const watch = (c.watchFor || []).map((w) => `<li><button class="ts" type="button" data-t="${toSec(w.t)}">${e(typeof w.t === 'number' ? Math.floor(w.t / 60) + ':' + String(w.t % 60).padStart(2, '0') : w.t)}</button><span>${e(w.note)}</span></li>`).join('');
+  const source = c.credit ? `<p class="note credit">${e(c.credit)}${c.video.type === 'youtube' ? ` <a href="${ytWatch(c.video.id, toSec(c.video.start || 0))}" rel="noopener">Watch on YouTube</a>.` : ''}</p>` : '';
+  const body = `<section class="band lesson-hero"><div class="wrap">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/tape/">Game Tape</a><span aria-hidden="true">/</span><span aria-current="page">${e(c.title)}</span></nav>
+<p class="kicker">Game Tape · ${e(c.player)}${c.show ? ' · ' + e(c.show) : ''}</p><h1>${e(c.title)}</h1>
+<p class="lede">${e(c.intro[0])}</p>
+<p class="updated">${site.author ? `By ${e(site.author.name)} · ` : ''}Updated <time datetime="${c.updated}">${fmtDate(c.updated)}</time></p></div></section>
+<div class="wrap section tape-wrap"><div class="tape-main">${playerHtml(c)}${source}
+${c.intro.slice(1).map((p) => `<p class="tape-copy">${e(p)}</p>`).join('')}
+${watch ? `<h2 class="tape-h">What to watch and hear</h2><ul class="watch">${watch}</ul>` : ''}
+<div class="card soft tape-lesson"><p class="kicker">The lesson behind this clip</p><h3><a href="${lessonUrl(lesson)}">${e(lesson.title)}</a></h3><p>${e(lesson.summary)}</p><a class="btn btn-dark" href="${lessonUrl(lesson)}">Open the lesson</a></div></div></div>
+${PLAYER_JS}`;
+  const url = clipUrl(c);
+  const article = { '@context': 'https://schema.org', '@type': 'Article', headline: c.title, description: c.description, url: site.domain + url, mainEntityOfPage: site.domain + url,
+    image: site.domain + '/og.png', datePublished: c.published, dateModified: c.updated, inLanguage: 'en', author: authorNode(site), publisher: orgNode(site) };
+  const ld = [article, breadcrumb(site, [['Home', '/'], ['Game Tape', '/tape/'], [c.title, url]])];
+  if (c.video.type === 'file' && c.video.poster && c.video.uploadDate) {
+    ld.push({ '@context': 'https://schema.org', '@type': 'VideoObject', name: c.title, description: c.description, thumbnailUrl: site.domain + c.video.poster, uploadDate: c.video.uploadDate, contentUrl: site.domain + c.video.src });
+  }
+  return shell(site, { title: c.seoTitle || `${c.title} | ${site.name}`, description: c.description, url, nav: '/tape/', body, styles: '<link rel="stylesheet" href="/assets/css/tape.css">\n', ogType: 'article', jsonld: ld });
+}
+
+function lessonTape(clips) {
+  if (!clips.length) return '';
+  return `<section id="tape" data-toc="Game tape" class="lesson-tape"><p class="kicker">Game tape</p><h2>Watch it in a real solo</h2><div class="grid wide">${clips.map((c) => `<a class="card" href="${clipUrl(c)}" style="text-decoration:none"><p class="kicker">${e(c.player)}</p><h3 style="color:var(--ink)">${e(c.title)}</h3><p>${e(c.summary)}</p></a>`).join('')}</div></section>
+`;
+}
+
 /* ---------- shared pieces ---------- */
 // Logo files: uses .png when present, then .webp, so swapping the image format needs no code change.
 const logoFile = (name) => {
@@ -38,7 +119,7 @@ const logoFile = (name) => {
 const LOGO_DARK = logoFile('gametapelicks-dark');
 const LOGO_LIGHT = logoFile('gametapelicks-light');
 
-function shell(site, { title, description, url, nav, body, scripts = '', bodyClass = '', noindex = false, ogType = 'website', jsonld = [] }) {
+function shell(site, { title, description, url, nav, body, scripts = '', styles = '', bodyClass = '', noindex = false, ogType = 'website', jsonld = [] }) {
   const full = site.domain + url;
   const navHtml = site.nav.map((n) => `<a href="${n.href}"${nav === n.href ? ' aria-current="page"' : ''}>${e(n.label)}</a>`).join('');
   return `<!doctype html>
@@ -67,7 +148,7 @@ ${noindex ? '<meta name="robots" content="noindex">\n' : '<meta name="robots" co
 <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
-<script>document.documentElement.classList.add('js')</script>
+${styles}<script>document.documentElement.classList.add('js')</script>
 ${jsonld.map((o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`).join('\n')}
 </head>
 <body class="${bodyClass}">
@@ -108,7 +189,7 @@ function previewBoard(lesson, W) {
     const c = parseChord(p.chord).chord;
     const marks = tensionMarks(tensionMap(c), 8, 18, { labels: 'name' });
     const svg = board(marks, { lo: 8, hi: 18, aria: `Tension map of ${c.sym} on frets 8 to 18` });
-    return `<figure class="panel">${svg}<figcaption>${c.sym}, frets 8 to 18. Filled dots are release notes. Rings are the pull.</figcaption></figure>`;
+    return `<figure class="panel">${svg}<figcaption>${c.sym} on frets 8 to 18. Filled dots are release notes. Rings pull toward them.</figcaption></figure>`;
   }
   if (!p || p.type !== 'thirds') return '';
   const R = ROOTS.find((r) => r.n === p.root) || ROOTS[0];
@@ -141,11 +222,11 @@ function homePage(site, lessons) {
 <div class="actions"><a class="btn btn-primary" href="${lessonUrl(first)}">Open the lesson</a></div></div>
 <div class="figure">${previewBoard(first)}</div></section>` : '';
   const more = rest.map((l) => `<article class="card"><p class="kicker">${e(l.kicker)}</p><h3><a href="${lessonUrl(l)}" style="color:inherit;text-decoration:none">${e(l.title)}</a></h3><p>${e(l.summary)}</p></article>`).join('')
-    + `<article class="card soft"><p class="kicker" style="color:var(--muted)">Next</p><h3>Next one when it's finished</h3><p>One chord-tone idea at a time.</p></article>`;
+    + `<article class="card soft"><p class="kicker" style="color:var(--muted)">More on the way</p><h3>New lessons are added as they are finished</h3><p>Each one takes a single idea and trains the pattern behind it.</p></article>`;
   const topics = site.topics.map((t) => `<a class="pill" href="/topics/${t.slug}/">${e(t.name)}</a>`).join('');
   const body = `<section class="band hero"><div class="wrap">
 <div class="copy"><p class="kicker">${e(site.home.kicker)}</p><h1>${e(site.home.title)}</h1><p class="lede">${e(site.home.lede)}</p>
-<div class="actions">${first ? `<a class="btn btn-primary" href="${lessonUrl(first)}">Start with Lesson 1</a>` : ''}<a class="btn btn-ghost" href="#method">The steps</a></div></div>
+<div class="actions">${first ? `<a class="btn btn-primary" href="${lessonUrl(first)}">Start with Lesson 1</a>` : ''}<a class="btn btn-ghost" href="#method">How a lesson works</a></div></div>
 ${heroBoard}</div></section>
 <section class="section" id="method"><div class="wrap"><div class="section-head"><p class="kicker">${e(site.method.kicker)}</p><h2>${e(site.method.title)}</h2><p class="lede">${e(site.method.body)}</p></div>
 <div class="grid">${steps}</div></div></section>
@@ -167,12 +248,12 @@ function listPage(site, lessons, { url, title, lede, active, heading, descriptio
   const side = [`<a href="/lessons/"${active === 'all' ? ' aria-current="true"' : ''}>All lessons</a>`]
     .concat(site.topics.map((t) => `<a href="/topics/${t.slug}/"${active === t.slug ? ' aria-current="true"' : ''}>${e(t.name)}</a>`)).join('');
   const rows = lessons.length ? lessons.map((l) => lessonRow(site, l)).join('')
-    : '<div class="card soft"><h3>None yet</h3><p>They go up when they\'re done.</p></div>';
+    : '<div class="card soft"><h3>Lessons for this topic are on the way</h3><p>New lessons are added as they are finished.</p></div>';
   const body = `<section class="band page-band"><div class="wrap"><p class="kicker">${e(heading)}</p><h1>${e(title)}</h1><p class="lede">${e(lede)}</p></div></section>
 <div class="wrap section"><div class="layout">
 <aside class="sidebar" aria-label="Topics"><p class="kicker">Topics</p>${side}</aside>
 <div class="stack"><div class="search noprint"><label for="q">Search</label><input id="q" type="text" placeholder="Search lessons" autocomplete="off"></div>
-<p class="note" id="none" hidden>Nothing matches.</p>${rows}</div></div></div>
+<p class="note" id="none" hidden>No lessons match that search.</p>${rows}</div></div></div>
 <script>
 (function(){var q=document.getElementById('q'),rows=[].slice.call(document.querySelectorAll('.lesson-row')),none=document.getElementById('none');
 q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(),n=0;rows.forEach(function(r){var m=!v||r.getAttribute('data-search').indexOf(v)>-1;r.hidden=!m;if(m)n++;});none.hidden=n>0||!rows.length;});})();
@@ -184,9 +265,9 @@ q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(),n=0;row
 function topicsIndex(site, lessons) {
   const cards = site.topics.map((t) => {
     const n = lessons.filter((l) => l.topics.includes(t.slug)).length;
-    return `<a class="card" href="/topics/${t.slug}/" style="text-decoration:none"><h3 style="color:var(--ink)">${e(t.name)}</h3><p>${n ? n + (n === 1 ? ' lesson' : ' lessons') : 'None yet'}</p></a>`;
+    return `<a class="card" href="/topics/${t.slug}/" style="text-decoration:none"><h3 style="color:var(--ink)">${e(t.name)}</h3><p>${n ? n + (n === 1 ? ' lesson' : ' lessons') : 'Lessons on the way'}</p></a>`;
   }).join('');
-  const body = `<section class="band page-band"><div class="wrap"><p class="kicker">Topics</p><h1>Pick a topic.</h1><p class="lede">Each lesson sits under one topic.</p></div></section>
+  const body = `<section class="band page-band"><div class="wrap"><p class="kicker">Topics</p><h1>Pick the skill you want to build.</h1><p class="lede">Every lesson belongs to a topic, so you can stay with one skill until it feels natural.</p></div></section>
 <div class="wrap section"><div class="grid">${cards}</div></div>`;
   return shell(site, { title: `Topics | ${site.name}`, description: 'Browse Gametape Licks guitar lessons by topic.', url: '/topics/', nav: '/topics/', body, jsonld: [breadcrumb(site, [['Home', '/'], ['Topics', '/topics/']])] });
 }
@@ -200,19 +281,21 @@ function aboutPage(site) {
 }
 
 function notFound(site) {
-  const body = `<section class="band page-band"><div class="wrap"><p class="kicker">404</p><h1>That page is not here.</h1><p class="lede">Use the lessons list.</p><div class="actions"><a class="btn btn-primary" href="/lessons/">All lessons</a></div></div></section>`;
+  const body = `<section class="band page-band"><div class="wrap"><p class="kicker">404</p><h1>That page is not here.</h1><p class="lede">Head back to the lessons and pick up from there.</p><div class="actions"><a class="btn btn-primary" href="/lessons/">All lessons</a></div></div></section>`;
   return shell(site, { title: `Page not found | ${site.name}`, description: 'Page not found.', url: '/404.html', nav: '', body, noindex: true });
 }
 
-function lessonPage(site, lessons, i) {
+function lessonPage(site, lessons, i, clips = []) {
   const l = lessons[i], prev = lessons[i - 1], next = lessons[i + 1];
   let html = fs.readFileSync(path.join(l.dir, 'body.html'), 'utf8');
+  const tapeHtml = lessonTape(clips.filter((c) => c.lesson === l.slug));
+  if (tapeHtml) html = html.replace(/(\s*<section id="faq")/, '\n' + tapeHtml + '$1');
   const toc = [...html.matchAll(/<section id="([^"]+)" data-toc="([^"]+)"/g)].map((m) => ({ id: m[1], label: m[2] }));
   const links = toc.map((t) => `<a href="#${t.id}">${e(t.label)}</a>`).join('');
   const opts = toc.map((t) => `<option value="${t.id}">${e(t.label)}</option>`).join('');
   const pager = `<nav class="pager" aria-label="More lessons">
 ${prev ? `<a href="${lessonUrl(prev)}"><span class="kicker">Previous</span><span>${e(prev.title)}</span></a>` : `<a href="/lessons/"><span class="kicker">Previous</span><span>Back to all lessons</span></a>`}
-${next ? `<a class="next" href="${lessonUrl(next)}"><span class="kicker">Next</span><span>${e(next.title)}</span></a>` : `<a class="next" href="/lessons/"><span class="kicker">Next</span><span>Next lesson when it's done</span></a>`}</nav>`;
+${next ? `<a class="next" href="${lessonUrl(next)}"><span class="kicker">Next</span><span>${e(next.title)}</span></a>` : `<a class="next" href="/lessons/"><span class="kicker">Next</span><span>More lessons are on the way</span></a>`}</nav>`;
   const body = `<div class="printbrand wrap"><img src="${LOGO_LIGHT}" alt="${e(site.name)}"></div>
 <section class="band lesson-hero"><div class="wrap">
 <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/lessons/">Lessons</a><span aria-hidden="true">/</span><span aria-current="page">${e(l.title)}</span></nav>
@@ -225,7 +308,7 @@ ${next ? `<a class="next" href="${lessonUrl(next)}"><span class="kicker">Next</s
 <div class="jump noprint"><label for="jump">Jump to section</label><select id="jump">${opts}</select></div>
 ${l.pdf ? `<button class="btn btn-line noprint" id="printBtn" type="button">Print or save as PDF</button>` : ''}</aside>
 <article class="lesson-body">${html}
-${l.pdf ? `<p class="note pdflink noprint"><a href="${l.pdf}">Download the PDF</a></p>` : ''}
+${l.pdf ? `<p class="note pdflink noprint">Prefer a fixed copy? <a href="${l.pdf}">Download the PDF of the 12-bar blues example</a>.</p>` : ''}
 ${pager}</article></div>
 <script>
 (function(){var j=document.getElementById('jump');if(j)j.addEventListener('change',function(){location.hash=j.value;});
@@ -245,6 +328,11 @@ document.querySelectorAll('.lesson-body > section').forEach(function(s){io.obser
 export function build({ out = path.join(ROOT, 'dist'), drafts = false } = {}) {
   const site = readJson(path.join(SRC, 'site.json'));
   const lessons = loadLessons(site, { drafts });
+  const clips = loadClips(lessons, { drafts });
+  if (clips.length && !site.nav.some((n) => n.href === '/tape/')) {
+    const ai = site.nav.findIndex((n) => n.href === '/about/');
+    site.nav.splice(ai < 0 ? site.nav.length : ai, 0, { label: 'Game Tape', href: '/tape/' });
+  }
   // Topics without a published lesson stay out of the site until they have one (no thin pages).
   site.topics = site.topics.filter((t) => lessons.some((l) => l.topics.includes(t.slug)));
   fs.rmSync(out, { recursive: true, force: true });
@@ -272,17 +360,21 @@ export function build({ out = path.join(ROOT, 'dist'), drafts = false } = {}) {
   write('about/index.html', aboutPage(site));
   write('404.html', notFound(site));
   lessons.forEach((l, i) => {
-    write(`lessons/${l.slug}/index.html`, lessonPage(site, lessons, i));
+    write(`lessons/${l.slug}/index.html`, lessonPage(site, lessons, i, clips));
     if (l.script) fs.copyFileSync(path.join(l.dir, l.script), path.join(out, 'lessons', l.slug, l.script));
     if (l.pdf && fs.existsSync(path.join(l.dir, l.pdf))) fs.copyFileSync(path.join(l.dir, l.pdf), path.join(out, 'lessons', l.slug, l.pdf));
   });
+  if (clips.length) {
+    write('tape/index.html', tapeIndex(site, clips, lessons));
+    clips.forEach((c, i) => write(`tape/${c.slug}/index.html`, tapePage(site, clips, lessons, i)));
+  }
   // sitemap, robots and llms.txt
-  const urls = ['/', '/lessons/', '/topics/', '/about/'].concat(site.topics.map((t) => `/topics/${t.slug}/`), lessons.map(lessonUrl));
-  const mod = Object.fromEntries(lessons.map((l) => [lessonUrl(l), l.updated]));
+  const urls = ['/', '/lessons/', '/topics/', '/about/'].concat(site.topics.map((t) => `/topics/${t.slug}/`), lessons.map(lessonUrl), clips.length ? ['/tape/'].concat(clips.map(clipUrl)) : []);
+  const mod = Object.fromEntries(lessons.map((l) => [lessonUrl(l), l.updated]).concat(clips.map((c) => [clipUrl(c), c.updated])));
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${site.domain}${u}</loc>${mod[u] ? `<lastmod>${mod[u]}</lastmod>` : ''}</url>`).join('\n')}\n</urlset>\n`);
-  write('robots.txt', `# Search engines and answer engines may read and cite these lessons.\n# AI training opt-out is in docs/seo-geo.md.\nUser-agent: *\nAllow: /\n\nSitemap: ${site.domain}/sitemap.xml\n`);
-  write('llms.txt', `# ${site.name}\n\n> ${site.description}\n\n## Lessons\n\n${lessons.map((l) => `- [${l.title}](${site.domain}${lessonUrl(l)}): ${l.description}`).join('\n')}\n\n## Topics\n\n${site.topics.map((t) => `- [${t.name}](${site.domain}/topics/${t.slug}/)`).join('\n')}\n\n## About\n\n- [About ${site.name}](${site.domain}/about/)\n`);
-  return { out, lessons, urls };
+  write('robots.txt', `# Everyone is welcome, including search engines and AI answer engines, so the lessons can be found and cited.\n# To keep lessons out of AI model training, see docs/seo-geo.md.\nUser-agent: *\nAllow: /\n\nSitemap: ${site.domain}/sitemap.xml\n`);
+  write('llms.txt', `# ${site.name}\n\n> ${site.description}\n\n## Lessons\n\n${lessons.map((l) => `- [${l.title}](${site.domain}${lessonUrl(l)}): ${l.description}`).join('\n')}\n\n${clips.length ? `## Game Tape\n\n${clips.map((c) => `- [${c.title}](${site.domain}${clipUrl(c)}): ${c.description}`).join('\n')}\n\n` : ''}## Topics\n\n${site.topics.map((t) => `- [${t.name}](${site.domain}/topics/${t.slug}/)`).join('\n')}\n\n## About\n\n- [About ${site.name}](${site.domain}/about/)\n`);
+  return { out, lessons, clips, urls };
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
