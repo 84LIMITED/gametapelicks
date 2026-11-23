@@ -19,5 +19,5 @@ Embed official uploads from the artist or label and add your own commentary. Hos
 Same rules as the lessons: no em dashes, no "not X, it's Y" constructions, short sentences. The tests check both.
 
 ## Still to confirm
-- The Goose show date and that the Hot Tea upload is on the Goose channel.
+- That the Hot Tea upload is on the Goose channel.
 - That the Key to the Highway video is the official Eric Clapton upload. Other 24 Nights candidates: Worried Life Blues (video gBgb-xnUckc). From Cream at Royal Albert Hall 2005, Crossroads is video _SWQQkrfgvA (upload source unconfirmed).
