@@ -1,0 +1,36 @@
+{
+  "title": "Minor to Major Pentatonic",
+  "order": 3,
+  "kicker": "Lesson 3 · Pentatonic scales and phrasing",
+  "summary": "Play the gritty minor box, then slide one fret into the sweet major box, the way Eric Clapton moves through a blues. Pick any key to see both scales on the neck, the one-fret swaps and five tab examples.",
+  "description": "Learn to switch from minor to major pentatonic on guitar the way Eric Clapton does. Pick a key to see both scales, the one-fret swap and five tab examples.",
+  "seoTitle": "Minor to Major Pentatonic on Guitar, Clapton Style | Gametape Licks",
+  "intro": [
+    "The minor pentatonic is the sound of the blues. The major pentatonic is the sweet side of the same song. Swap one note, the minor 3rd for the major 3rd, and the whole phrase changes mood. This lesson shows you both scales on the neck, the one-fret slide that connects them and tab examples in every key.",
+    "Eric Clapton built much of his playing on this move, following B.B. King and Buddy Guy. He digs into the minor box, then bends or hammers the 3rd up a fret and lets the line brighten. Lesson 2 covered tension and release. This lesson gives you the scale shapes that make it happen."
+  ],
+  "chips": [
+    "Any key",
+    "Five tab examples",
+    "12-bar blues map",
+    "Printable PDF"
+  ],
+  "tags": [
+    "Pentatonic scales",
+    "Major and minor pentatonic",
+    "Eric Clapton approach",
+    "Blues soloing"
+  ],
+  "topics": [
+    "phrasing",
+    "chord-tones"
+  ],
+  "preview": {
+    "type": "thirds",
+    "root": "A"
+  },
+  "pdf": "Minor-to-Major-Pentatonic.pdf",
+  "script": "lesson.js",
+  "published": "2026-11-23",
+  "updated": "2026-11-23"
+}
